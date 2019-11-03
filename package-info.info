@@ -1,0 +1,8 @@
+/**
+ * About the names of variables (local and global) and functions:
+ *  1. all local variables' names should be like: atoshDustosh, temp,
+ *   or dis (which means DataInputStream, well, although it's not valid in C programming)
+ *  2. all global variables' names should be like: PI, DATASIZE, FILEPATH. (all capital letters)
+ *  3. all functions' names should be like:
+ *  addNewData(/params/), remove(/params/), removeData(/params).
+ */
