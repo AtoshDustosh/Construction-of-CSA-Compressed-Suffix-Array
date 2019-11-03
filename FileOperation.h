@@ -18,7 +18,7 @@ long loadFnaData(char* filePath, long dataLength, char T[]);
  * @param dataLength length of DNA sequence
  * @param T[] array used for storing data (ending with '$')
  */
-long loadFnaData(char* filePath, long dataLength, char T[]){
+long loadFnaData(char* filePath, long dataLength, char T[]) {
     FILE* fp = fopen(filePath, "r");
     int ifData = 0;
     long fnaDataPointer = 0;

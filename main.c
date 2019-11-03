@@ -10,7 +10,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_7000.txt";   // file path
+char* FILEPATH = "testExample.txt";   // file path
 long ARRAYLENGTH = 0; // length of DNA sequence array (ending with '$')
 long PARTLENGTH = 0; // part length of DNA sequence array ( PARTLENGTH = log2(ARRAYLENGTH))
 char* T = NULL; // DNA sequence of (A,C,G,T)
@@ -33,12 +33,12 @@ int main() {
 // TODO add new functions
 
 /**
- * Test steps of construction of CSA.
+ * Test steps of construction of CSA - directly build.
  *
  * <note> bug detected - array directly defined cannot be too big.
  * To solve this problem, use (long*)malloc(sizeof(long)*ARRAYLENGTH).
  */
-void testProcess(){
+void testProcess() {
     ARRAYLENGTH = fnaDataSize(FILEPATH);
     printf("data length: %ld\n", ARRAYLENGTH);
 
@@ -49,20 +49,21 @@ void testProcess(){
     loadFnaData(FILEPATH, ARRAYLENGTH, temp);
 
     printf("DNA sequence - T[]: \n");
-    for(long i = 0; i < ARRAYLENGTH; i++){
-        //printf("%c", T[i]);
+    for(long i = 0; i < ARRAYLENGTH; i++) {
+        \
+        printf("%c", T[i]);
     }
     printf("\n");
 
     // build SA[] - suffix array
     long* SA = (int*)malloc(sizeof(long)*ARRAYLENGTH);
-    for(long i = 0; i < ARRAYLENGTH; i++){
+    for(long i = 0; i < ARRAYLENGTH; i++) {
         SA[i] = i;
     }
     suffixArrayQuickSort(SA, T, 0, ARRAYLENGTH-1);
     printf("Suffix array - SA[]: \n");
-    for(long i = 0; i < ARRAYLENGTH; i++){
-        //printf("%ld\t%ld\t%c\n", i, SA[i], T[SA[i]]);
+    for(long i = 0; i < ARRAYLENGTH; i++) {
+        printf("%ld\t%ld\t%c\n", i, SA[i], T[SA[i]]);
     }
     printf("\n");
 
@@ -73,7 +74,7 @@ void testProcess(){
     inverseSA(SA, SA_inverse, ARRAYLENGTH);
     printf("Psi array - Psi[]: \n");
     psiArrayBuild(SA, SA_inverse, Psi, ARRAYLENGTH);
-    for(long i = 0; i < ARRAYLENGTH; i++){
+    for(long i = 0; i < ARRAYLENGTH; i++) {
         printf("%ld\t%ld\t%c\n", i, Psi[i], T[Psi[i]]);
     }
     printf("\n");
