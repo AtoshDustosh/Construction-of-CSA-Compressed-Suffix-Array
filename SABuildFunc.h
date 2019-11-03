@@ -18,11 +18,11 @@ void _psiArrayBuildTest();
 /*
  * Important functions.
  */
-void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length);
-void inverseSA(int SA[], int SA_inverse[], int length);
-void quickSort(char *str[], int left, int right);
-void suffixArrayQuickSort(int SA[], char T[], int left, int right);
-int compareSuffix(int i, int j, char T[]);
+void psiArrayBuild(long SA[], long SA_inverse[], long Psi[], long length);
+void inverseSA(long SA[], long SA_inverse[], long length);
+void quickSort(char *str[], long left, long right);
+void suffixArrayQuickSort(long SA[], char T[], long left, long right);
+int compareSuffix(long i, long j, char T[]);
 
 
 /**
@@ -33,11 +33,11 @@ void _quickSortTest() {
     char *str[] = {"abb", "aab", "aaa", "bbdsas",
                    "bsass", "brabrabra", "blahblah", "atosh"
                   };
-    int strLength = 8;
+    long strLength = 8;
 
     quickSort(str, 0, strLength-1);
 
-    int i = 0;
+    long i = 0;
     printf("sorted strings' array: ");
     for(i = 0; i < strLength; i++) {
         printf(" %s", str[i]);
@@ -51,15 +51,15 @@ void _quickSortTest() {
 void _suffixArrayQuickSortTest() {
     printf("\n ******* Suffix Array Quick Sort Test *********\n");
     char T[] = "acaaccg$";
-    int SA[] = {0,1,2,3,4,5,6,7};
+    long SA[] = {0,1,2,3,4,5,6,7};
     printf("total array: %s\n", T);
 
     suffixArrayQuickSort(SA, T, 0, 7);
 
     printf("sorted suffix array: ");
-    int i = 0;;
+    long i = 0;;
     for( i = 0; i < 8; i++) {
-        printf("%d ", SA[i]);
+        printf("%ld ", SA[i]);
     }
     printf("\n");
 }
@@ -80,25 +80,25 @@ void _compareSuffixTest() {
 void _inverseSATest() {
     printf("\n ****** inverse SA test ******* \n");
     char T[] = "acaaccg$";
-    int SA[] = {0,1,2,3,4,5,6,7};
-    int i = 0;
-    int arrayLength = sizeof(SA)/sizeof(int);
+    long SA[] = {0,1,2,3,4,5,6,7};
+    long i = 0;
+    long arrayLength = sizeof(SA)/sizeof(int);
     printf("total array: %s\n", T);
 
     // create suffix array of T
     suffixArrayQuickSort(SA, T, 0, arrayLength - 1);
     printf("sorted suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%d ", SA[i]);
+        printf("%ld ", SA[i]);
     }
     printf("\n");
 
     // get inversed suffix array (x->y => y->x)
-    int SA_inverse[arrayLength];
+    long SA_inverse[arrayLength];
     inverseSA(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%d ", SA_inverse[i]);
+        printf("%ld ", SA_inverse[i]);
     }
     printf("\n");
 
@@ -111,40 +111,41 @@ void _inverseSATest() {
 void _psiArrayBuildTest() {
     printf("\n ****** psi Array Build Test ******* \n");
     char T[] = "acaaccg$";
-    int SA[] = {0,1,2,3,4,5,6,7};
-    int i = 0;
-    int arrayLength = sizeof(SA)/sizeof(int);
+    long SA[] = {0,1,2,3,4,5,6,7};
+    long i = 0;
+    long arrayLength = sizeof(SA)/sizeof(int);
     printf("total array: %s\n", T);
 
     // create suffix array of T
     suffixArrayQuickSort(SA, T, 0, arrayLength - 1);
     printf("sorted suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%d ", SA[i]);
+        printf("%ld ", SA[i]);
     }
     printf("\n");
 
     // get inversed suffix array (x->y => y->x)
-    int SA_inverse[arrayLength];
+    long SA_inverse[arrayLength];
     inverseSA(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%d ", SA_inverse[i]);
+        printf("%ld ", SA_inverse[i]);
     }
     printf("\n");
 
     // build Psi array based on SA[] and SA_inverse[]
-    int Psi[arrayLength];
+    long Psi[arrayLength];
     psiArrayBuild(SA, SA_inverse, Psi, arrayLength);
     printf("Psi array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%d ", Psi[i]);
+        printf("%ld ", Psi[i]);
     }
     printf("\n");
 
     printf("\n");
 
 }
+
 /**
  * Build psi function array.
  *
@@ -153,8 +154,8 @@ void _psiArrayBuildTest() {
  * @param Psi[] psi function array
  * @param length length of these arrays (all the same)
  */
-void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length) {
-    int i = 0;
+void psiArrayBuild(long SA[], long SA_inverse[], long Psi[], long length) {
+    long i = 0;
     Psi[0] = SA_inverse[0];
     for(i = 1; i < length; i++) {
         Psi[i] = SA_inverse[SA[i] + 1];
@@ -168,8 +169,8 @@ void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length) {
  * @param SA_inverse[] inverse of suffix array (to be created)
  * @param length length of suffix array
  */
-void inverseSA(int SA[], int SA_inverse[], int length) {
-    int i = 0;
+void inverseSA(long SA[], long SA_inverse[], long length) {
+    long i = 0;
     for(i = 0; i < length; i++) {
         SA_inverse[SA[i]] = i;
     }
@@ -182,12 +183,12 @@ void inverseSA(int SA[], int SA_inverse[], int length) {
  * @param left start position (index-start)
  * @param right end position (index-end)
  */
-void quickSort(char *str[], int left, int right) {
+void quickSort(char *str[], long left, long right) {
     if(left >= right) {
         return;
     }
-    int i = left;
-    int j = right;
+    long i = left;
+    long j = right;
     char *key = str[left];
 //	printf("key: %s ****", key);
 //    int index = 0;
@@ -227,12 +228,12 @@ void quickSort(char *str[], int left, int right) {
  * @param left left bounder index
  * @param right right bounder index
  */
-void suffixArrayQuickSort(int SA[], char T[], int left, int right) {
+void suffixArrayQuickSort(long SA[], char T[], long left, long right) {
     if(left >= right) {
         return;
     }
-    int i = left;
-    int j = right;
+    long i = left;
+    long j = right;
     int key = SA[left]; // the key-suffix starts at SA[left]
 
     while(i < j) {
@@ -266,7 +267,7 @@ void suffixArrayQuickSort(int SA[], char T[], int left, int right) {
  * @return 1 when suffix[i] > suffix[j]; -1 when suffix[i] < suffix[j];
  * 		0 when suffix[i] equals suffix[j]
  */
-int compareSuffix(int i, int j, char T[]) {
+int compareSuffix(long i, long j, char T[]) {
 //    printf("comparing suffix(%d, %c, %d) and suffix(%d, %c, %d)\n", i, T[i], T[i], j, T[j], T[j]);
     while(T[i] != '\0' && T[j] != '\0') {
         if(T[i] == '$' && T[j] == '$') {
@@ -289,6 +290,7 @@ int compareSuffix(int i, int j, char T[]) {
             return 1;
         }
     }
+    return 2;
 }
 
 #endif // SABUILDFUNC_H_INCLUDED

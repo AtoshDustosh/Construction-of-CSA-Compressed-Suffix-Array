@@ -6,6 +6,45 @@
 #include <sys/stat.h>
 
 long fnaDataSize(char* filePath);
+long loadFnaData(char* filePath, long dataLength, char T[]);
+
+
+/**
+ * Load ?.fna file and read data into an array T[] whose length is designated.
+ *
+ * NOTE: this method will append a character '$' to the end of the array.
+ *
+ * @param filePath file path
+ * @param dataLength length of DNA sequence
+ * @param T[] array used for storing data (ending with '$')
+ */
+long loadFnaData(char* filePath, long dataLength, char T[]){
+    FILE* fp = fopen(filePath, "r");
+    int ifData = 0;
+    long fnaDataPointer = 0;
+
+    if(fp != NULL) {
+        char ch = fgetc(fp);
+        while(ch != EOF) {
+            if(ch == '\n' && !ifData) {
+                // according to format of *.fna file
+                // data part is after the first line
+                ifData = 1;
+            }
+            if(ifData && ch != '\n') {
+                // if not '\n' and is already in the data part
+                // store char into the array
+                T[fnaDataPointer++] = ch;
+            }
+            ch = fgetc(fp);
+        }
+    } else {
+        printf("failed to open file %s", filePath);
+    }
+    // add '$' to the end of the DNA seq
+    T[fnaDataPointer++] = '$';
+    return fnaDataPointer;
+}
 
 /**
  * Get the size of data (DNA sequence) of a ?.fna file.
