@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "HelperFunction.h"
 
 /*
@@ -12,10 +13,12 @@ void _quickSortTest();
 void _suffixArrayQuickSortTest();
 void _compareSuffixTest();
 void _inverseSATest();
+void _psiArrayBuildTest();
 
 /*
  * Important functions.
  */
+void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length);
 void inverseSA(int SA[], int SA_inverse[], int length);
 void quickSort(char *str[], int left, int right);
 void suffixArrayQuickSort(int SA[], char T[], int left, int right);
@@ -26,7 +29,6 @@ int compareSuffix(int i, int j, char T[]);
  * Test quick sort.
  */
 void _quickSortTest() {
-
     printf("section\\\\ Quick Sort test\n");
     char *str[] = {"abb", "aab", "aaa", "bbdsas",
                    "bsass", "brabrabra", "blahblah", "atosh"
@@ -103,7 +105,10 @@ void _inverseSATest() {
     printf("\n");
 }
 
-void _psiArrayBuildTest(){
+/**
+ * Test building Psi[] array. Psi[i] = SA_inverse[SA[i]].
+ */
+void _psiArrayBuildTest() {
     printf("\n ****** psi Array Build Test ******* \n");
     char T[] = "acaaccg$";
     int SA[] = {0,1,2,3,4,5,6,7};
@@ -132,7 +137,7 @@ void _psiArrayBuildTest(){
     int Psi[arrayLength];
     psiArrayBuild(SA, SA_inverse, Psi, arrayLength);
     printf("Psi array: ");
-    for(i = 0; i < arrayLength; i++){
+    for(i = 0; i < arrayLength; i++) {
         printf("%d ", Psi[i]);
     }
     printf("\n");
@@ -148,10 +153,10 @@ void _psiArrayBuildTest(){
  * @param Psi[] psi function array
  * @param length length of these arrays (all the same)
  */
-void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length){
+void psiArrayBuild(int SA[], int SA_inverse[], int Psi[], int length) {
     int i = 0;
     Psi[0] = SA_inverse[0];
-    for(i = 1; i < length; i++){
+    for(i = 1; i < length; i++) {
         Psi[i] = SA_inverse[SA[i] + 1];
     }
 }
