@@ -16,8 +16,8 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
 
 void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
               long arrayLength, long partLength, long partNum) {
-    long startIndex = (partNum - 1) * partLength;
-    long localLength = arrayLength - startIndex;
+    long bi = (partNum - 1) * partLength;
+    long localLength = arrayLength - bi;
     long i = 0;
     char* localT = NULL;
     long* localSA = NULL;
@@ -31,8 +31,8 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
         printf("%c", T[i]);
     }
 
-    printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", startIndex);
-    for(i = startIndex; i < arrayLength; i++) {
+    printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
+    for(i = bi; i < arrayLength; i++) {
         printf("%c", T[i]);
     }
 
@@ -43,9 +43,9 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
     localSA_inverse = (long*)malloc(sizeof(long) * localLength);
     localPsi = (long*)malloc(sizeof(long) * localLength);
 
-    for(i = startIndex; i < arrayLength; i++) {
-        localT[i - startIndex] = T[i];
-        localSA[i - startIndex] = i - startIndex;
+    for(i = bi; i < arrayLength; i++) {
+        localT[i - bi] = T[i];
+        localSA[i - bi] = i - bi;
     }
 
     suffixArrayQuickSort(localSA, localT, 0, localLength - 1);
@@ -56,23 +56,33 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
     psiArrayBuildWhole(localSA, localSA_inverse, localPsi, localLength);
 
     // copy the results to the original arrays
-    for(i = startIndex; i < arrayLength; i++) {
-        long locali = i - startIndex;
-        SA[i] = localSA[locali];
-        SA_inverse[i] = localSA_inverse[locali];
-        Psi[i] = localPsi[locali];
+    for(i = bi; i < arrayLength; i++) {
+        long locali = i - bi;
+        SA[i] = localSA[locali] + bi;
+        SA_inverse[i] = localSA_inverse[locali] + bi;
+        Psi[i] = localPsi[locali] + bi;
     }
 
     // print the sorted first increment
     printf("index\tch\tSA\tch_SA\tSA_inv\tPsi\tch_Psi\n");
-    for(i = 0; i < localLength; i++) {
+//    for(i = 0; i < localLength; i++) {  // simple version
+//        printf("%ld\t", i);
+//        printf("%c\t", localT[i]);
+//        printf("%ld\t", localSA[i]);
+//        printf("%c\t", localT[localSA[i]]);
+//        printf("%ld\t", localSA_inverse[i]);
+//        printf("%ld\t", localPsi[i]);
+//        printf("%c\t", localT[localPsi[i]]);
+//        printf("\n");
+//    }
+    for(i = bi; i < arrayLength; i++) {  // complicated version
         printf("%ld\t", i);
-        printf("%c\t", localT[i]);
-        printf("%ld\t", localSA[i]);
-        printf("%c\t", localT[localSA[i]]);
-        printf("%ld\t", localSA_inverse[i]);
-        printf("%ld\t", localPsi[i]);
-        printf("%c\t", localT[localPsi[i]]);
+        printf("%c\t", T[i]);
+        printf("%ld\t", SA[i]);
+        printf("%c\t", T[SA[i]]);
+        printf("%ld\t", SA_inverse[i]);
+        printf("%ld\t", Psi[i]);
+        printf("%c\t", T[Psi[i]]);
         printf("\n");
     }
 

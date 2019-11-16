@@ -196,9 +196,11 @@ void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
 
 /**
  * Binary search T_SA_inverse[] to find the left and right bounds of a character c.
+ * Note that T[SA[i]]] is like a map from i to the i-th (by lex-order) suffix of the
+ * designated part in T (from \arg left to \arg right).
  *
  * @param T DNA sequence plus a '$'
- * @param SA inverse of SA of T
+ * @param SA SA of T in the designated area
  * @param c character whose bounds are to be searched for
  * @param left initial left bound
  * @param right initial right bound
@@ -269,9 +271,9 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
  * Test binary search bound.
  */
 void _CSABinaryBoundSearchTest() {
-    char* T = "acaaccg$";
-    long SA[] = {7, 2, 0, 3, 1, 4, 5, 6};
-    char c = 'c';
+    char* T = "ttaaccttaaata$";
+    long SA[] = {13,12,8,2,9,3,10,4,5,11,7,1,6,0};
+    char c = 'g';
     long left = 0;
     long right = strlen(T) - 1;
     long i = 0;
@@ -280,18 +282,43 @@ void _CSABinaryBoundSearchTest() {
     }
     printf("\n");
 
+    c = 'g';
+    left = 0;
+    right = strlen(T) - 1;
     CSABinaryBoundSearch(T, SA, c, &left, &right);
-    printf("length: %d. -> %ld, %ld\n", strlen(T), left, right);
+    printf("length: %d. (%c)-> %ld, %ld\n", strlen(T), c, left, right);
+
+    c = 'c';
+    left = 0;
+    right = strlen(T) - 1;
+    CSABinaryBoundSearch(T, SA, c, &left, &right);
+    printf("length: %d. (%c)-> %ld, %ld\n", strlen(T), c, left, right);
 }
 
 /**
  * Test binary search bound.
  */
 void _binarySearchBoundTest() {
-    char* chArray = "$aaacccccccgttttt";
+    char* chArray = "$aaagggggggttttt";
     char c = 'c';
     long left = 0;
     long right = strlen(chArray) - 1;
+    long i = 0;
+
+    for(i = 0; i < strlen(chArray); i++){
+        printf("%c", chArray[i]);
+    }
+    printf("\n");
+
+    c = 't';
+    left = 0;
+    right = strlen(chArray) - 1;
+    directBinarySearchBound(chArray, c, &left, &right);
+    printf("length: %d. -> %ld, %ld\n", strlen(chArray), left, right);
+
+    c = 'c';
+    left = 0;
+    right = strlen(chArray) - 1;
     directBinarySearchBound(chArray, c, &left, &right);
     printf("length: %d. -> %ld, %ld\n", strlen(chArray), left, right);
 }

@@ -10,7 +10,7 @@
 
 void mergeStepA(char* T, long* SA, long* SA_inverse, long arrayLength, long partLength,
                 long partNum, long partIndex);
-void mergeStepB(char* T, long* SA, long* SA_inverse, long arrayLength, long partLength,
+void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 long partNum, long partIndex, long* order);
 void mergeStepC();
 
@@ -56,14 +56,14 @@ void mergeStepA(char* T, long* SA, long* SA_inverse, long arrayLength, long part
     printf("i\tch\tSA[]\tch_SA\tSA_inverse\n");
     for(i = bi_i; i < bi_apostrophe; i++) {
         long locali = i - bi_i;
-        SA[i] = localSA[locali];
-        SA_inverse[i] = localSA_inverse[locali];
+        SA[i] = localSA[locali] + bi_i;
+        SA_inverse[i] = localSA_inverse[locali] + bi_i;
 
-        printf("%ld\t", locali);
-        printf("%c\t", T_i[locali]);
-        printf("%ld\t", localSA[locali]);
-        printf("%c\t", T_i[localSA[locali]]);
-        printf("%ld\t", localSA_inverse[locali]);
+        printf("%ld\t", i);
+        printf("%c\t", T[i]);
+        printf("%ld\t", SA[i]);
+        printf("%c\t", T[SA[i]]);
+        printf("%ld\t", SA_inverse[i]);
         printf("\n");
     }
 }
@@ -74,7 +74,7 @@ void mergeStepA(char* T, long* SA, long* SA_inverse, long arrayLength, long part
  *
  * @param T DNA sequence (plus a '$')
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
- * @param SA_inverse used to store inverse of SA_part of suffixes
+ * @param Psi Psi array of T
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
  * @param partNum number of parts
@@ -82,7 +82,7 @@ void mergeStepA(char* T, long* SA, long* SA_inverse, long arrayLength, long part
  * @param order order[] that stores result of func order(suf_k, T'), where suf_k is the k-th
  *      longest suffix of T_i and T' is combination of T_(i+1)...T_([n/l|+]).
  */
-void mergeStepB(char* T, long* SA, long* SA_inverse, long arrayLength, long partLength,
+void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 long partNum, long partIndex, long* order) {
     printf("Merge Step (b)\n");
     long i = 0;
@@ -90,11 +90,33 @@ void mergeStepB(char* T, long* SA, long* SA_inverse, long arrayLength, long part
     long bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
     // T_apostrophe - start from bi_apostrophe and ends at arrayLength
+    // note that lc and rc are not actual bounds of the character c
+    long prevOrder = SA[bi_apostrophe];
     for(i = bi_apostrophe - 1; i >= bi_i; i--) {
         char c = T[i];  // the character in the formula
         long lc = bi_apostrophe;
         long rc = arrayLength - 1;
+        long orderValue = 0;
+        CSABinaryBoundSearch(T, SA, c, &lc, &rc);
+        // T[SA[lc]] ~ T[SA[rc]] represents the field of c
+        // implement of condition ¦×[b] -> ¦×[SA[b]], lc <= b <= rc
+        printf("(%c) -> lc: %ld, rc: %ld", c, lc, rc);
+        printf("\n");
 
+        if(lc > rc) {
+            orderValue = lc - 1;
+        } else {
+
+        }
+
+
+        order[bi_apostrophe - 1 - i] = orderValue - bi_apostrophe;
+        prevOrder = orderValue - bi_apostrophe;
+    }
+
+
+    for(i = bi_apostrophe; i < arrayLength; i++) {
+        printf("%c", T[SA[i]]);
     }
 
     printf("\n");

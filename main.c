@@ -22,6 +22,7 @@ char* T = NULL; // DNA sequence of (A,C,G,T) plus a '$'
 long* SA = NULL; // SA of T
 long* SA_inverse = NULL; // inverse of SA
 long* Psi = NULL; // Psi of T - the compressed suffix array
+long* Order = NULL; // order func of the whole array
 
 /*
  * Functions.
@@ -51,14 +52,14 @@ int main() {
     i = PARTNUM;
     baseStep(FILEPATH, T, SA, SA_inverse, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM);
 
-    for(i = PARTNUM - 1; i > 0; i--) {
+    for(i = PARTNUM - 1; i > 6; i--) {
         printf("\nincrement part (%ld)\n", i);
         long partIndex = i; // T_i and T_apostrophe is stored using partIndex
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
         mergeStepA(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
-        mergeStepB(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
+        mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
         mergeStepC();
     }
 
@@ -102,7 +103,7 @@ void testSet() {
 //    _psiArrayBuildTest();
 //    _lowerCaseTest();
 //    _binarySearchBoundTest();
-//    _CSABinaryBoundSearchTest();
+    _CSABinaryBoundSearchTest();
 
 //    readAndPrint();
 //    directlyConstruction();
