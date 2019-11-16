@@ -57,8 +57,8 @@ int main() {
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
-        mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
-        mergeStepB(T, SA, PARTLENGTH, PARTNUM, partIndex, order);
+        mergeStepA(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
+        mergeStepB(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
         mergeStepC();
     }
 
@@ -66,28 +66,6 @@ int main() {
 }
 
 ////////////////////////////////// Actually Working Funcs //////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -123,6 +101,8 @@ void testSet() {
 //    _inverseSATest();
 //    _psiArrayBuildTest();
 //    _lowerCaseTest();
+//    _binarySearchBoundTest();
+//    _CSABinaryBoundSearchTest();
 
 //    readAndPrint();
 //    directlyConstruction();

@@ -14,10 +14,15 @@ void _suffixArrayQuickSortTest();
 void _compareSuffixTest();
 void _inverseSAWholeTest();
 void _psiArrayBuildWholeTest();
+void _binarySearchBoundTest();
+void _CSABinaryBoundSearchTest();
+
 
 /*
  * Important functions.
  */
+void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right);
+void directBinarySearchBound(char* chArray, char c, long* left, long* right);
 void psiArrayBuildWhole(long SA[], long SA_inverse[], long Psi[], long length);
 void inverseSAWhole(long SA[], long SA_inverse[], long length);
 void quickSort(char *str[], long left, long right);
@@ -129,6 +134,126 @@ void inverseSAWhole(long SA[], long SA_inverse[], long length) {
     }
 }
 
+/**
+ * Binary search chArray to find the left and right bounds of a character c.
+ * Note that chArray is a sorted array by lex-order.
+ *
+ * @param chArray a char array sorted by lex-order
+ * @param c character whose bounds are to be searched for
+ * @param left initial left bound
+ * @param right initial right bound
+ */
+void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
+    long leftBorder = *left;
+    long rightBorder = *right;
+    long lc = *left;
+    long rc = *right;
+
+    // find the left bound
+    leftBorder = *left;
+    rightBorder = *right;
+    while(leftBorder < rightBorder) {
+        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        char midCh = chArray[mid];
+        if(mid == leftBorder) {
+            if(chArray[leftBorder] == c) {
+                break;
+            } else {
+                leftBorder++;
+            }
+        } else if(midCh < c) {
+            leftBorder = mid;
+        } else if(midCh >= c) {
+            rightBorder = mid;
+        }
+    }
+    lc = leftBorder;
+
+    // find the right bound
+    leftBorder = *left;
+    rightBorder = *right;
+    while(leftBorder < rightBorder) {
+        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        char midCh = chArray[mid];
+        if(mid == leftBorder) {
+            if(chArray[rightBorder] == c) {
+                break;
+            } else {
+                rightBorder--;
+            }
+        } else if(midCh <= c) {
+            leftBorder = mid;
+        } else if(midCh > c) {
+            rightBorder = mid;
+        }
+    }
+    rc = rightBorder;
+
+    // assign the results to pointers
+    *left = lc;
+    *right = rc;
+}
+
+/**
+ * Binary search T_SA_inverse[] to find the left and right bounds of a character c.
+ *
+ * @param T DNA sequence plus a '$'
+ * @param SA inverse of SA of T
+ * @param c character whose bounds are to be searched for
+ * @param left initial left bound
+ * @param right initial right bound
+ */
+void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
+    long leftBorder = *left;
+    long rightBorder = *right;
+    long lc = *left;
+    long rc = *right;
+
+    // find the left bound
+    leftBorder = *left;
+    rightBorder = *right;
+    while(leftBorder < rightBorder) {
+        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        char midCh = T[SA[mid]];
+        if(mid == leftBorder) {
+            if(T[SA[leftBorder]] == c) {
+                break;
+            } else {
+                leftBorder++;
+            }
+        } else if(midCh < c) {
+            leftBorder = mid;
+        } else if(midCh >= c) {
+            rightBorder = mid;
+        }
+    }
+    lc = leftBorder;
+
+    // find the right bound
+    leftBorder = *left;
+    rightBorder = *right;
+    while(leftBorder < rightBorder) {
+        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        char midCh = T[SA[mid]];
+        if(mid == leftBorder) {
+            if(T[SA[rightBorder]] == c) {
+                break;
+            } else {
+                rightBorder--;
+            }
+        } else if(midCh <= c) {
+            leftBorder = mid;
+        } else if(midCh > c) {
+            rightBorder = mid;
+        }
+    }
+    rc = rightBorder;
+
+    // assign the results to pointers
+    *left = lc;
+    *right = rc;
+}
+
 
 
 
@@ -140,23 +265,36 @@ void inverseSAWhole(long SA[], long SA_inverse[], long length) {
 
 
 
+/**
+ * Test binary search bound.
+ */
+void _CSABinaryBoundSearchTest() {
+    char* T = "acaaccg$";
+    long SA[] = {7, 2, 0, 3, 1, 4, 5, 6};
+    char c = 'c';
+    long left = 0;
+    long right = strlen(T) - 1;
+    long i = 0;
+    for(i = 0; i < strlen(T); i++) {
+        printf("%c", T[SA[i]]);
+    }
+    printf("\n");
 
+    CSABinaryBoundSearch(T, SA, c, &left, &right);
+    printf("length: %d. -> %ld, %ld\n", strlen(T), left, right);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Test binary search bound.
+ */
+void _binarySearchBoundTest() {
+    char* chArray = "$aaacccccccgttttt";
+    char c = 'c';
+    long left = 0;
+    long right = strlen(chArray) - 1;
+    directBinarySearchBound(chArray, c, &left, &right);
+    printf("length: %d. -> %ld, %ld\n", strlen(chArray), left, right);
+}
 
 /**
  * Test quick sort.
