@@ -17,7 +17,7 @@ void _inverseSAWholeTest();
 void _psiArrayBuildWholeTest();
 void _binarySearchBoundTest();
 void _CSABinaryBoundSearchTest();
-void _CSABinarySearchOrderValueTest();
+//void _CSABinarySearchOrderValueTest();    // this test is unnecessary ... perhaps
 
 
 /*
@@ -301,10 +301,6 @@ void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevO
 
 
 
-
-void _CSABinarySearchOrderValueTest() {
-
-}
 
 /**
  * Test binary search bound.

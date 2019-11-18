@@ -22,7 +22,6 @@ char* T = NULL; // DNA sequence of (A,C,G,T) plus a '$'
 long* SA = NULL; // SA of T
 long* SA_inverse = NULL; // inverse of SA
 long* Psi = NULL; // Psi of T - the compressed suffix array
-long* Order = NULL; // order func of the whole array
 
 /*
  * Functions.
@@ -58,9 +57,9 @@ int main() {
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
-        mergeStepA(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
+        mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
         mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
-        mergeStepC();
+        mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
     }
 
     return 0;
@@ -88,7 +87,7 @@ int main() {
  * and execute this function.
  */
 void testSet() {
-    int arrayTest[3] = {1, 2, 3};
+//    int arrayTest[3] = {1, 2, 3};
 
 //    _CLanguageReview();
 //    _mathematicalFuncsTest();
