@@ -9,6 +9,7 @@
 /*
  * Test functions.
  */
+
 void _quickSortTest();
 void _suffixArrayQuickSortTest();
 void _compareSuffixTest();
@@ -16,11 +17,15 @@ void _inverseSAWholeTest();
 void _psiArrayBuildWholeTest();
 void _binarySearchBoundTest();
 void _CSABinaryBoundSearchTest();
+void _CSABinarySearchOrderValueTest();
 
 
 /*
  * Important functions.
  */
+
+void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevOrderValue,
+                               long* max_b);
 void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right);
 void directBinarySearchBound(char* chArray, char c, long* left, long* right);
 void psiArrayBuildWhole(long SA[], long SA_inverse[], long Psi[], long length);
@@ -200,7 +205,7 @@ void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
  * designated part in T (from \arg left to \arg right).
  *
  * @param T DNA sequence plus a '$'
- * @param SA SA of T in the designated area
+ * @param SA SA of T in the designated interval
  * @param c character whose bounds are to be searched for
  * @param left initial left bound
  * @param right initial right bound
@@ -256,6 +261,38 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
     *right = rc;
 }
 
+/**
+ * Find the maximum b that is within [lc, rc] and satisfies condition that for any
+ * order(cX, T'), Psi_T'[SA[b]] <= order(X, T').
+ *
+ * @param SA SA of T in the designated interval
+ * @param Psi Psi of T in the designated interval
+ * @param lc left bound of the interval
+ * @param rc right bound of the interval
+ * @param prevOrderValue value of previous order func, which actually is order(X, T')
+ * @param max_b a pointer to maximum b
+ */
+void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevOrderValue,
+                               long* max_b) {
+    // find the right bound
+    while(lc < rc) {
+        long mid = lc + (rc - lc) / 2;
+        long midCh = Psi[SA[mid]];
+        if(mid == lc) {
+            if(Psi[SA[rc]] == prevOrderValue) {
+                break;
+            } else {
+                rc--;
+            }
+        } else if(midCh <= prevOrderValue) {
+            lc = mid;
+        } else if(midCh > prevOrderValue) {
+            rc = mid;
+        }
+    }
+    *max_b = rc;
+}
+
 
 
 
@@ -265,14 +302,16 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
 
 
 
+void _CSABinarySearchOrderValueTest() {
 
+}
 
 /**
  * Test binary search bound.
  */
 void _CSABinaryBoundSearchTest() {
     char* T = "ttaaccttaaata$";
-    long SA[] = {13,12,8,2,9,3,10,4,5,11,7,1,6,0};
+    long SA[] = {13, 12, 8, 2, 9, 3, 10, 4, 5, 11, 7, 1, 6, 0};
     char c = 'g';
     long left = 0;
     long right = strlen(T) - 1;
@@ -305,7 +344,7 @@ void _binarySearchBoundTest() {
     long right = strlen(chArray) - 1;
     long i = 0;
 
-    for(i = 0; i < strlen(chArray); i++){
+    for(i = 0; i < strlen(chArray); i++) {
         printf("%c", chArray[i]);
     }
     printf("\n");

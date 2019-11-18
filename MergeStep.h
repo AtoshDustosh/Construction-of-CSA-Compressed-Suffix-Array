@@ -91,7 +91,7 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 
     // T_apostrophe - start from bi_apostrophe and ends at arrayLength
     // note that lc and rc are not actual bounds of the character c
-    long prevOrder = SA[bi_apostrophe];
+    long prevOrderValue = SA[bi_apostrophe];
     for(i = bi_apostrophe - 1; i >= bi_i; i--) {
         char c = T[i];  // the character in the formula
         long lc = bi_apostrophe;
@@ -104,14 +104,19 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         printf("\n");
 
         if(lc > rc) {
-            orderValue = lc - 1;
+            // TODO I have doubt about this. I think it should be "orderValue = lc - bi_apostrophe;"
+            orderValue = lc - 1 - bi_apostrophe;
         } else {
-
+            // find the max b that satisfies condition that for any order(cX, T'), Psi_T'[b] <= order(X, T')
+            long max_b = 0;
+            CSABinarySearchOrderValue(SA, Psi, lc, rc, prevOrderValue, &max_b);
+            orderValue = max_b - bi_apostrophe;
         }
 
+//        printf("%ld, orderValue: %ld\n", i - bi_i, orderValue);
 
-        order[bi_apostrophe - 1 - i] = orderValue - bi_apostrophe;
-        prevOrder = orderValue - bi_apostrophe;
+        order[i - bi_i] = orderValue;
+        prevOrderValue = orderValue;
     }
 
 
