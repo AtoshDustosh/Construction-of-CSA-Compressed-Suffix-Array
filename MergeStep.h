@@ -96,11 +96,11 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         CSABinaryBoundSearch(T, SA, c, &lc, &rc);
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
         // implement of condition ¦×[b] -> ¦×[SA[b]], lc <= b <= rc
-        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc, rc);
+//        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc, rc);
 
         if(lc > rc) {
             /**
-             * \caution Still doubting about this, I think it should be "orderValue = lc - bi_apostrophe;"
+             * \caution Still doubting about this, I think it should be "orderValue = lc - 0 -bi_apostrophe;"
              */
             orderValue = lc - 0 - bi_apostrophe;   // this is modified ... on my own will
         } else {
@@ -110,18 +110,27 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
             orderValue = max_b - bi_apostrophe;
         }
 
-        printf("orderValue(%ld): %ld\t", i - bi_i, orderValue);
+//        printf("orderValue(%ld): %ld\t", i - bi_i, orderValue);
 
         order[i - bi_i] = orderValue;
         prevOrderValue = orderValue;
 
-        printf("\n");
+//        printf("\n");
     }
 
     printf("T\': ");
     for(i = bi_apostrophe; i < arrayLength; i++) {
         printf("%c", T[SA[i]]);
     }
+    printf("\n");
+
+    printf("For sorted suf_k[] ...\n");
+    for(i = 0; i < partLength; i++) {
+        printf("suf[%ld](%ld) ~ %c...\torder(suf[%ld], T\'): %ld\n", i, SA[i + bi_i], T[SA[i + bi_i]], i,
+               order[SA[i + bi_i] - bi_i]);
+    }
+
+
 
     printf("\n");
 
@@ -147,6 +156,7 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 long partNum, long partIndex, long* order) {
     printf("Merge Step (c)\n");
     long i = 0;
+    long j = 0;
     long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
     long bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
@@ -154,6 +164,25 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     long* gFunc = (long*)malloc(sizeof(long) * partLength);
 
     // construction of func f
+    long num = 0;
+    long maxIndex = 0;
+    for(i = 0; i < arrayLength - bi_apostrophe; i++) {
+        printf("//****\n");
+        for(j = maxIndex; j < partLength; j++) {
+            long orderValue = order[SA[j + bi_i] - bi_i];
+
+            printf("suf[%ld](%c)\t", j, T[SA[j + bi_i]]);
+            printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
+
+            if(orderValue > i) {
+                break;
+            } else {
+                num++;
+                maxIndex++;
+            }
+        }
+        printf("f[%ld](%c): %ld\n", i, T[SA[i + bi_apostrophe]], i + num);
+    }
 
     // construction of func g
 

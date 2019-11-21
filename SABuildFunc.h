@@ -234,6 +234,9 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
             rightBorder = mid;
         }
     }
+    if(T[SA[rightBorder]] < c) {
+        leftBorder++;
+    }
     lc = leftBorder;
 
     // find the right bound
@@ -243,7 +246,7 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
         long mid = leftBorder + (rightBorder - leftBorder) / 2;
         char midCh = T[SA[mid]];
         if(mid == leftBorder) {
-            if(T[SA[rightBorder]] == c) {
+            if(T[SA[rightBorder]] <= c) {
                 break;
             } else {
                 rightBorder--;
@@ -279,7 +282,7 @@ void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevO
         long mid = lc + (rc - lc) / 2;
         long midCh = Psi[SA[mid]];
         if(mid == lc) {
-            if(Psi[SA[rc]] == prevOrderValue) {
+            if(Psi[SA[rc]] <= prevOrderValue) {
                 break;
             } else {
                 rc--;
@@ -317,17 +320,19 @@ void _CSABinaryBoundSearchTest() {
     }
     printf("\n");
 
+    printf("length: %d\n", strlen(T));
+
     c = 'g';
     left = 0;
     right = strlen(T) - 1;
     CSABinaryBoundSearch(T, SA, c, &left, &right);
-    printf("length: %d. (%c)-> %ld, %ld\n", strlen(T), c, left, right);
+    printf("%c -> %ld, %ld\n", c, left, right);
 
     c = 'c';
     left = 0;
     right = strlen(T) - 1;
     CSABinaryBoundSearch(T, SA, c, &left, &right);
-    printf("length: %d. (%c)-> %ld, %ld\n", strlen(T), c, left, right);
+    printf("%c -> %ld, %ld\n", c, left, right);
 }
 
 /**
