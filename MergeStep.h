@@ -162,10 +162,15 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 
     long* fFunc = (long*)malloc(sizeof(long) * (arrayLength - bi_apostrophe));
     long* gFunc = (long*)malloc(sizeof(long) * partLength);
+    long* psiFunc = (long*)malloc(sizeof(long) * (arrayLength - bi_i));
 
-    // construction of func f
     long num = 0;
     long maxIndex = 0;
+
+    // construction of func f
+    printf("Calculating func f ...\n");
+    num = 0;
+    maxIndex = 0;
     for(i = 0; i < arrayLength - bi_apostrophe; i++) {
         printf("//****\n");
         for(j = maxIndex; j < partLength; j++) {
@@ -181,10 +186,27 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 maxIndex++;
             }
         }
+
         printf("f[%ld](%c): %ld\n", i, T[SA[i + bi_apostrophe]], i + num);
+        fFunc[i] = i + num;
     }
 
     // construction of func g
+    printf("Calculating func g ...\n");
+    num = 0;
+    maxIndex = 0;
+    for(i = 0; i < partLength; i++) {
+        long orderValue_i = order[SA[i + bi_i] - bi_i];
+        for(j = maxIndex; j < partLength; j++) {
+            long orderValue_temp = order[SA[j + bi_i] - bi_i];
+            if(orderValue_temp <= orderValue_i) {
+                maxIndex++;
+                num++;
+            }
+        }
+        printf("g[%ld](%c): %ld\n", i, T[SA[i + bi_i]], orderValue_i + num);
+        gFunc[i] = orderValue_i + num;
+    }
 
     // construction of func Psi
 
