@@ -65,23 +65,13 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
 
     // print the sorted first increment
     printf("index\tch\tSA\tch_SA\tSA_inv\tPsi\tch_Psi\n");
-//    for(i = 0; i < localLength; i++) {  // simple version
-//        printf("%ld\t", i);
-//        printf("%c\t", localT[i]);
-//        printf("%ld\t", localSA[i]);
-//        printf("%c\t", localT[localSA[i]]);
-//        printf("%ld\t", localSA_inverse[i]);
-//        printf("%ld\t", localPsi[i]);
-//        printf("%c\t", localT[localPsi[i]]);
-//        printf("\n");
-//    }
     for(i = bi; i < arrayLength; i++) {  // complicated version
-        printf("%ld\t", i);
+        printf("%ld\t", i - bi);
         printf("%c\t", T[i]);
-        printf("%ld\t", SA[i]);
+        printf("%ld\t", SA[i] - bi);
         printf("%c\t", T[SA[i]]);
-        printf("%ld\t", SA_inverse[i]);
-        printf("%ld\t", Psi[i]);
+        printf("%ld\t", SA_inverse[i] - bi);
+        printf("%ld\t", Psi[i] - bi);
         printf("%c\t", T[Psi[i]]);
         printf("\n");
     }

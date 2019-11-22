@@ -14,7 +14,7 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 long partNum, long partIndex, long* order);
 
-
+void _fgpsiFuncTest();
 
 
 /**
@@ -55,9 +55,9 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
         long locali = i - bi_i;
         SA[i] = localSA[locali] + bi_i;
 
-        printf("%ld\t", i);
+        printf("%ld\t", i - bi_i);
         printf("%c\t", T[i]);
-        printf("%ld\t", SA[i]);
+        printf("%ld\t", SA[i] - bi_i);
         printf("%c\t", T[SA[i]]);
         printf("\n");
     }
@@ -187,8 +187,15 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
             }
         }
 
-        printf("f[%ld](%c): %ld\n", i, T[SA[i + bi_apostrophe]], i + num);
-        fFunc[i] = i + num;
+        printf("f[%ld](%c): %ld\n", SA[i + bi_apostrophe] - bi_apostrophe, T[SA[i + bi_apostrophe]],
+               i + num);
+        fFunc[SA[i + bi_apostrophe] - bi_apostrophe] = i + num;
+    }
+
+    printf("///////\n");
+    printf("i\tch\tfunc f[]\n");
+    for(i = 0; i < arrayLength - bi_apostrophe; i++) {
+        printf("%ld\t%c\t%ld\n", i, T[i + bi_apostrophe], fFunc[i]);
     }
 
     // construction of func g
@@ -199,17 +206,122 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         long orderValue_i = order[SA[i + bi_i] - bi_i];
         for(j = maxIndex; j < partLength; j++) {
             long orderValue_temp = order[SA[j + bi_i] - bi_i];
+            /**
+             * \caution still doubting about this. The original is "<=".
+             */
+            if(orderValue_temp < orderValue_i) {
+                maxIndex++;
+                num++;
+            }
+        }
+//        printf("g[%ld](%c): %ld\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]], orderValue_i + num);
+        gFunc[SA[i + bi_i] - bi_i] = orderValue_i + num;
+    }
+
+    printf("///////\n");
+    printf("i\tch\tfunc g[]\n");
+    for(i = 0; i < partLength; i++) {
+        printf("%ld\t%c\t%ld\n", i, T[i + bi_i], gFunc[i]);
+    }
+
+
+    // construction of func Psi
+    printf("Calculating func psi ...\n");
+    long t = 0;
+    for(t = 0, i = 0, j = 0; t < arrayLength - bi_i; t++) {
+        if(t == gFunc[partLength - 1]) {
+            psiFunc[t] = fFunc[Psi[0 + bi_apostrophe]];
+        } else if(t == fFunc[i]) {
+            psiFunc[t] = fFunc[Psi[i + bi_apostrophe]];
+            i++;
+        } else {
+            psiFunc[t] = gFunc[j + 1];
+            j++;
+        }
+    }
+
+    printf("///////\n");
+    printf("i\tch\tfunc psi[]\n");
+    for(i = 0; i < arrayLength - bi_i; i++) {
+        printf("%ld\t%c\t%ld\n", i, T[i + bi_i], psiFunc[i]);
+    }
+
+
+}
+
+
+void _fgpsiFuncTest(){
+    long i = 0;
+    long j = 0;
+
+    char* T_apostrophe = "cagac$";
+    char* T_i = "gca";
+
+    long fFuncLength = strlen(T_apostrophe);
+    long gFuncLength = strlen(T_i);
+    long* fFunc = (long*)malloc(sizeof(long) * fFuncLength);
+    long* gFunc = (long*)malloc(sizeof(long) * gFuncLength);
+
+    long num = 0;
+    long maxIndex = 0;
+
+    long order[3] = {5, 3, 1};
+
+    // construction of func f
+    printf("Calculating func f ...\n");
+    num = 0;
+    maxIndex = 0;
+    for(i = 0; i < fFuncLength; i++) {
+        printf("//****\n");
+        for(j = maxIndex; j < gFuncLength; j++) {
+            long orderValue = order[j];
+
+            printf("suf[%ld](%c)\t", j, T_i[j]);
+            printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
+
+            if(orderValue > i) {
+                break;
+            } else {
+                num++;
+                maxIndex++;
+            }
+        }
+
+        printf("f[%ld](%c): %ld\n", i, T_apostrophe[i], i + num);
+        fFunc[i] = i + num;
+    }
+
+    printf("///////\n");
+    printf("i\tch\tfunc f[]\n");
+    for(i = 0; i < fFuncLength; i++) {
+        printf("%ld\t%c\t%ld\n", i, T_apostrophe[i], fFunc[i]);
+    }
+
+    // construction of func g
+    printf("Calculating func g ...\n");
+    num = 0;
+    maxIndex = 0;
+    for(i = 0; i < gFuncLength; i++) {
+        long orderValue_i = order[i];
+        for(j = maxIndex; j < gFuncLength; j++) {
+            long orderValue_temp = order[j];
+            /**
+             * \caution still doubting about this. The original is "<=".
+             */
             if(orderValue_temp <= orderValue_i) {
                 maxIndex++;
                 num++;
             }
         }
-        printf("g[%ld](%c): %ld\n", i, T[SA[i + bi_i]], orderValue_i + num);
+//        printf("g[%ld](%c): %ld\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]], orderValue_i + num);
         gFunc[i] = orderValue_i + num;
     }
 
-    // construction of func Psi
-
+    printf("///////\n");
+    printf("i\tch\tfunc g[]\n");
+    for(i = 0; i < gFuncLength; i++) {
+        printf("%ld\t%c\t%ld\n", i, T_i[i], gFunc[i]);
+    }
 
 
 }

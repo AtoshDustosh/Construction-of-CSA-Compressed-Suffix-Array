@@ -102,7 +102,8 @@ void testSet() {
 //    _psiArrayBuildTest();
 //    _lowerCaseTest();
 //    _binarySearchBoundTest();
-    _CSABinaryBoundSearchTest();
+//    _CSABinaryBoundSearchTest();
+    _fgpsiFuncTest();
 
 //    readAndPrint();
 //    directlyConstruction();
