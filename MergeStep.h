@@ -66,7 +66,9 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
 /**
  * Calculate all order(suf_k, T') in an order k = l, l-1, ..., 1.
  *
- * \note suf[] is already sorted by lex-order.
+ * \note suf[] is already sorted by lex-order
+ * \note values of order[] correspond to the local index of T', not the global index of T
+ * \note indexes of order[] correspond to the sorted suffixes' global indexes of T
  *
  * @param T DNA sequence (plus a '$')
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
@@ -95,7 +97,7 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         long orderValue = 0;
         CSABinaryBoundSearch(T, SA, c, &lc, &rc);
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
-        // implement of condition ¦×[b] -> ¦×[SA[b]], lc <= b <= rc
+        // implement of condition ×[b] -> ×[SA[b]], lc <= b <= rc
 //        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc, rc);
 
         if(lc > rc) {
@@ -118,9 +120,15 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 //        printf("\n");
     }
 
-    printf("T\': ");
+    printf("sorted T\': ");
     for(i = bi_apostrophe; i < arrayLength; i++) {
         printf("%c", T[SA[i]]);
+    }
+    printf("\n");
+
+    printf("T_i: ");
+    for(i = bi_i; i < bi_apostrophe; i++) {
+        printf("%c", T[i]);
     }
     printf("\n");
 
@@ -140,7 +148,7 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 /**
  * Calculate the Psi function for T_iT'.
  *
- * \note you should build func f and g of the part first, and then calculate Psi based on them.
+ * \note func f, g, psi corresponds to their local indexes of T', T_i and T_iT'
  *
  * @param T DNA sequence (plus a '$')
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
@@ -171,15 +179,19 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     printf("Calculating func f ...\n");
     num = 0;
     maxIndex = 0;
+    // calculate by lex-order for the convenience of calculating #(order(suf_k, T') <= j)
     for(i = 0; i < arrayLength - bi_apostrophe; i++) {
         printf("//****\n");
+        // make use of the increasing values of order with increasing lex-order
         for(j = maxIndex; j < partLength; j++) {
             long orderValue = order[SA[j + bi_i] - bi_i];
 
             printf("suf[%ld](%c)\t", j, T[SA[j + bi_i]]);
             printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
-
-            if(orderValue > i) {
+            /**
+             * \caution the original is ">".
+             */
+            if(orderValue >= i) {
                 break;
             } else {
                 num++;
@@ -195,21 +207,20 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     printf("///////\n");
     printf("i\tch\tfunc f[]\n");
     for(i = 0; i < arrayLength - bi_apostrophe; i++) {
-        printf("%ld\t%c\t%ld\n", i, T[i + bi_apostrophe], fFunc[i]);
+        printf("%ld\t%c\t%ld\n", i, T[SA[i + bi_apostrophe]], fFunc[SA[i + bi_apostrophe] - bi_apostrophe]);
     }
 
     // construction of func g
     printf("Calculating func g ...\n");
     num = 0;
     maxIndex = 0;
+    // calculate by lex-order for the convenience of calculating #(suf_k <= suf_i)
     for(i = 0; i < partLength; i++) {
         long orderValue_i = order[SA[i + bi_i] - bi_i];
+        long suffix_i = SA[i + bi_i];
         for(j = maxIndex; j < partLength; j++) {
-            long orderValue_temp = order[SA[j + bi_i] - bi_i];
-            /**
-             * \caution still doubting about this. The original is "<=".
-             */
-            if(orderValue_temp < orderValue_i) {
+            long suffix_k = SA[j + bi_i];
+            if(compareSuffix(suffix_k, suffix_i, T) <= 0) {
                 maxIndex++;
                 num++;
             }
@@ -226,16 +237,19 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 
 
     // construction of func Psi
+    /**
+     * \TODO fix the bug
+     */
     printf("Calculating func psi ...\n");
     long t = 0;
     for(t = 0, i = 0, j = 0; t < arrayLength - bi_i; t++) {
         if(t == gFunc[partLength - 1]) {
-            psiFunc[t] = fFunc[Psi[0 + bi_apostrophe]];
+            psiFunc[t] = fFunc[SA[Psi[0 + bi_apostrophe]]];
         } else if(t == fFunc[i]) {
-            psiFunc[t] = fFunc[Psi[i + bi_apostrophe]];
+            psiFunc[t] = fFunc[SA[Psi[i + bi_apostrophe]]];
             i++;
         } else {
-            psiFunc[t] = gFunc[j + 1];
+            psiFunc[gFunc[j]] = gFunc[j + 1];
             j++;
         }
     }
@@ -250,7 +264,7 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
 }
 
 
-void _fgpsiFuncTest(){
+void _fgpsiFuncTest() {
     long i = 0;
     long j = 0;
 
@@ -261,25 +275,33 @@ void _fgpsiFuncTest(){
     long gFuncLength = strlen(T_i);
     long* fFunc = (long*)malloc(sizeof(long) * fFuncLength);
     long* gFunc = (long*)malloc(sizeof(long) * gFuncLength);
+    long* psiFunc = (long*)malloc(sizeof(long) * (fFuncLength + gFuncLength));
 
     long num = 0;
     long maxIndex = 0;
 
-    long order[3] = {5, 3, 1};
+    long order[3] = {5, 3, 1}; // order(suf_k, T') by lex-order of suffix[]
+    long SA_i[3] = {2, 1, 0}; // the corresponding lex-order of suffix[] from T_i
+    long SA[6] = {5, 3, 1, 4, 0, 2};
+    long Psi[6] = {4, 3, 5, 0, 2, 1};
 
     // construction of func f
     printf("Calculating func f ...\n");
     num = 0;
     maxIndex = 0;
+    // calculate by lex-order for the convenience of calculating #(order(suf_k, T') <= j)
     for(i = 0; i < fFuncLength; i++) {
         printf("//****\n");
+        // make use of the increasing values of order with increasing lex-order
         for(j = maxIndex; j < gFuncLength; j++) {
-            long orderValue = order[j];
+            long orderValue = order[SA_i[j]];
 
-            printf("suf[%ld](%c)\t", j, T_i[j]);
+            printf("suf[%ld](%c)\t", j, T_i[SA_i[j]]);
             printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
-
-            if(orderValue > i) {
+            /**
+             * \caution the original is ">".
+             */
+            if(orderValue >= i) {
                 break;
             } else {
                 num++;
@@ -287,40 +309,66 @@ void _fgpsiFuncTest(){
             }
         }
 
-        printf("f[%ld](%c): %ld\n", i, T_apostrophe[i], i + num);
-        fFunc[i] = i + num;
+        printf("f[%ld](%c): %ld\n", SA[i], T_apostrophe[SA[i]], i + num);
+        fFunc[SA[i]] = i + num;
     }
 
     printf("///////\n");
     printf("i\tch\tfunc f[]\n");
     for(i = 0; i < fFuncLength; i++) {
-        printf("%ld\t%c\t%ld\n", i, T_apostrophe[i], fFunc[i]);
+        printf("%ld\t%c\t%ld\n", i, T_apostrophe[SA[i]], fFunc[SA[i]]);
     }
 
     // construction of func g
     printf("Calculating func g ...\n");
     num = 0;
     maxIndex = 0;
+    // calculate by lex-order for the convenience of calculating #(suf_k <= suf_j)
     for(i = 0; i < gFuncLength; i++) {
-        long orderValue_i = order[i];
+        long orderValue_i = order[SA_i[i]];
         for(j = maxIndex; j < gFuncLength; j++) {
-            long orderValue_temp = order[j];
-            /**
-             * \caution still doubting about this. The original is "<=".
-             */
-            if(orderValue_temp <= orderValue_i) {
+            long suffix_k = SA_i[j];
+            if(compareSuffix(suffix_k, SA_i[i], T_i) <= 0) {
                 maxIndex++;
                 num++;
             }
         }
-//        printf("g[%ld](%c): %ld\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]], orderValue_i + num);
-        gFunc[i] = orderValue_i + num;
+        printf("g[%ld](%c): %ld\n", SA_i[i], T_i[SA_i[i]], orderValue_i + num);
+        gFunc[SA_i[i]] = orderValue_i + num;
     }
 
     printf("///////\n");
     printf("i\tch\tfunc g[]\n");
     for(i = 0; i < gFuncLength; i++) {
         printf("%ld\t%c\t%ld\n", i, T_i[i], gFunc[i]);
+    }
+
+    // construction of func Psi
+    /**
+     * \TODO fix the bug
+     */
+    printf("Calculating func psi ...\n");
+    long t = 0;
+    for(t = 0, i = 0, j = 0; t < fFuncLength + gFuncLength; t++) {
+        if(t == gFunc[gFuncLength - 1]) {
+            psiFunc[t] = fFunc[SA[Psi[0]]];
+        } else if(t == fFunc[SA[i]]) {
+            psiFunc[t] = fFunc[SA[Psi[i]]];
+            i++;
+        } else {
+            psiFunc[gFunc[j]] = gFunc[j + 1];
+            j++;
+        }
+    }
+
+    printf("///////\n");
+    printf("i\tch\tfunc psi[]\n");
+    for(i = 0; i < fFuncLength + gFuncLength; i++) {
+        if(i < fFuncLength) {
+            printf("%ld\t%c\t%ld\n", i, T_apostrophe[i], psiFunc[i]);
+        } else {
+            printf("%ld\t%c\t%ld\n", i, T_i[i - fFuncLength], psiFunc[i]);
+        }
     }
 
 

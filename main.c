@@ -35,6 +35,10 @@ int main() {
     long i = 0;
     testSet();
 
+    /**
+     * \TODO fix the bug
+     */
+    return 0;
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %ld\n", ARRAYLENGTH);
