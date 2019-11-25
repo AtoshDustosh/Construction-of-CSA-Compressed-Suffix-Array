@@ -361,6 +361,9 @@ void _fgpsiFuncTest() {
         }
     }
 
+    /**
+     * \TODO display of func psi has bugs!!!
+     */
     printf("///////\n");
     printf("i\tch\tfunc psi[]\n");
     for(i = 0; i < fFuncLength + gFuncLength; i++) {
