@@ -7,6 +7,7 @@
 #include "FileOperation.h"
 #include "BasicStep.h"
 #include "MergeStep.h"
+#define LINELENGTH 70
 
 /*
  * Global variables.
