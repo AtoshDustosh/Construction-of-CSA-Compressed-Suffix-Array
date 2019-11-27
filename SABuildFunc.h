@@ -34,6 +34,51 @@ void quickSort(char *str[], long left, long right);
 void suffixArrayQuickSort(long SA[], char T[], long left, long right);
 int compareSuffix(long i, long j, char T[]);
 
+
+/**
+ * Quick sort an array that stores strings.
+ *
+ * @param str[] an array of strings
+ * @param left start position (index-start)
+ * @param right end position (index-end)
+ */
+void quickSort(char *str[], long left, long right) {
+    if(left >= right) {
+        return;
+    }
+    long i = left;
+    long j = right;
+    char *key = str[left];
+//  printf("key: %s ****", key);
+//    int index = 0;
+//    for(index = 0; index < right-left+1; index++){
+//        printf(" %s", str[index]);
+//    }
+//    printf("\n");
+
+
+    while(i < j) {
+        // find the str that is samller than key in right part
+        while(i < j && strcmp(key, str[j]) <= 0) {
+            j--;
+        }
+        str[i] = str[j];    // update that str to left part
+        // find the str that is larger than key in left part
+        while(i < j && strcmp(str[i], key) <= 0) {
+            i++;
+        }
+        str[j] = str[i];
+    }
+    // finally update the key str
+    str[i] = key;
+
+    /*
+     * iteration part
+     */
+    quickSort(str, left, i);
+    quickSort(str, i + 1, right);
+}
+
 /**
  * Use quick sort to sort suffix arrays of T[] and store the lex-order in
  * SA[].
@@ -312,7 +357,7 @@ void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevO
  * Test binary search order value.
  */
 void _CSABinarySearchOrderValueTest() {
-    printf("*********** _CSABinarySearchOrderValueTest ***********\n");
+    printf("\n ******* _CSABinarySearchOrderValueTest *********\n");
     long i = 0;
     char* T_apostrophe = "cagac$";
     char* T_i = "gca";
@@ -359,6 +404,7 @@ void _CSABinarySearchOrderValueTest() {
  * Test binary search bound.
  */
 void _CSABinaryBoundSearchTest() {
+    printf("\n ******* _CSABinaryBoundSearchTest *********\n");
     char* T = "ttaaccttaaata$";
     long SA[] = {13, 12, 8, 2, 9, 3, 10, 4, 5, 11, 7, 1, 6, 0};
     char c = 'g';
@@ -389,6 +435,7 @@ void _CSABinaryBoundSearchTest() {
  * Test binary search bound.
  */
 void _binarySearchBoundTest() {
+    printf("\n ******* _binarySearchBoundTest *********\n");
     char* chArray = "$aaagggggggttttt";
     char c = 'c';
     long left = 0;
@@ -417,7 +464,7 @@ void _binarySearchBoundTest() {
  * Test quick sort.
  */
 void _quickSortTest() {
-    printf("section\\\\ Quick Sort test\n");
+    printf("\n ******* _quickSortTest *********\n");
     char *str[] = {"abb", "aab", "aaa", "bbdsas",
                    "bsass", "brabrabra", "blahblah", "atosh"
                   };
@@ -437,7 +484,7 @@ void _quickSortTest() {
  * Test quick sort of suffix arrays.
  */
 void _suffixArrayQuickSortTest() {
-    printf("\n ******* Suffix Array Quick Sort Test *********\n");
+    printf("\n ******* _suffixArrayQuickSortTest *********\n");
     long i = 0;
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
@@ -457,7 +504,7 @@ void _suffixArrayQuickSortTest() {
  * Test comparing suffixes.
  */
 void _compareSuffixTest() {
-    printf("\n ************ Compare Suffix Test ************n");
+    printf("\n ******* _compareSuffixTest *********\n");
     char* T = "aabcdabcdefg";
     int result = compareSuffix(0, 5, T);
 
@@ -475,7 +522,7 @@ void _compareSuffixTest() {
  * Test inverse the SA[].
  */
 void _inverseSAWholeTest() {
-    printf("\n ****** inverse SA test ******* \n");
+    printf("\n ******* _inverseSAWholeTest *********\n");
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
     long i = 0;
@@ -506,7 +553,7 @@ void _inverseSAWholeTest() {
  * Test building Psi[] array. Psi[i] = SA_inverse[SA[i]].
  */
 void _psiArrayBuildWholeTest() {
-    printf("\n ****** psi Array Build Test ******* \n");
+    printf("\n ******* _psiArrayBuildWholeTest *********\n");
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
     long i = 0;
@@ -543,49 +590,5 @@ void _psiArrayBuildWholeTest() {
 
 }
 
-
-/**
- * Quick sort an array that stores strings.
- *
- * @param str[] an array of strings
- * @param left start position (index-start)
- * @param right end position (index-end)
- */
-void quickSort(char *str[], long left, long right) {
-    if(left >= right) {
-        return;
-    }
-    long i = left;
-    long j = right;
-    char *key = str[left];
-//  printf("key: %s ****", key);
-//    int index = 0;
-//    for(index = 0; index < right-left+1; index++){
-//        printf(" %s", str[index]);
-//    }
-//    printf("\n");
-
-
-    while(i < j) {
-        // find the str that is samller than key in right part
-        while(i < j && strcmp(key, str[j]) <= 0) {
-            j--;
-        }
-        str[i] = str[j];    // update that str to left part
-        // find the str that is larger than key in left part
-        while(i < j && strcmp(str[i], key) <= 0) {
-            i++;
-        }
-        str[j] = str[i];
-    }
-    // finally update the key str
-    str[i] = key;
-
-    /*
-     * iteration part
-     */
-    quickSort(str, left, i);
-    quickSort(str, i + 1, right);
-}
 
 #endif // SABUILDFUNC_H_INCLUDED

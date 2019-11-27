@@ -85,9 +85,6 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
  */
 void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 long partNum, long partIndex, long* order) {
-    /**
-     * \TODO perhaps there exists bug in this block
-     */
     printf("Merge Step (b)\n");
     long i = 0;
     long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
@@ -227,10 +224,6 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     }
 
     // construction of func g
-    /**
-     * \TODO fix the bug - in the 2nd iteration, there exists duplicates in g func.
-     * Maybe it has something to do with the bug in main func concerning "void testSet()"
-     */
     printf("Calculating func g ...\n");
     num = 0;
     maxIndex = 0;

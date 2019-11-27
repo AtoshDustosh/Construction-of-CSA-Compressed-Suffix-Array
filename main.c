@@ -8,8 +8,6 @@
 #include "BasicStep.h"
 #include "MergeStep.h"
 
-#define LINELENGTH 70
-
 /*
  * Global variables.
  */
@@ -29,7 +27,6 @@ long* Psi = NULL; // Psi of T - the compressed suffix array
 void directlyConstruction();
 void testSet();
 void readAndPrint();
-// TODO add the lost claim of functions
 
 int main() {
     long i = 0;
@@ -61,12 +58,11 @@ int main() {
         mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
     }
 
-
     /**
      * \TODO strange bug - if I put this func before the first func in main() which is fnaDataSize(...)
      *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
      */
-//    testSet();
+    testSet();
 
     return 0;
 }
