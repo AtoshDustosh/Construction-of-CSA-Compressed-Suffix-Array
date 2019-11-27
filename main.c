@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_500.txt";   // file path
+char* FILEPATH = "testdata_2.txt";   // file path
 long ARRAYLENGTH = 0; // length of T ~ n
 long PARTLENGTH = 0; // part length of T ~ l
 long PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -28,6 +28,7 @@ long* Psi = NULL; // Psi of T - the compressed suffix array
 void directlyConstruction();
 void testSet();
 void readAndPrint();
+void performanceProblem();
 
 int main() {
     long i = 0;
@@ -38,6 +39,7 @@ int main() {
      *  this bug may have been fixed, but I'm not sure.
      */
     testSet();
+    return 0;
 
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
@@ -52,7 +54,7 @@ int main() {
     SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
     Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
 
-    if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL){
+    if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL) {
         printf("System memory not enough. \n");
         exit(-1);
     }
@@ -104,19 +106,20 @@ void testSet() {
 //    _mathematicalFuncsTest();
 //    _mathematicalFuncsTest();
 //    _quickSortTest();
-//    _myStrLengthTest();
-//    _suffixArrayQuickSortTest();
-//    _compareSuffixTest();
-//    _inverseSAWholeTest();
-//    _psiArrayBuildWholeTest();
-//    _lowerCaseTest();
-//    _binarySearchBoundTest();
+    _myStrLengthTest();
+    _suffixArrayQuickSortTest();
+    _compareSuffixTest();
+    _inverseSAWholeTest();
+    _psiArrayBuildWholeTest();
+    _lowerCaseTest();
+    _binarySearchBoundTest();
 //    _CSABinaryBoundSearchTest();
 //    _CSABinarySearchOrderValueTest();
 //    _fgpsiFuncTest();
 //
 //    readAndPrint();
-    directlyConstruction();
+//    directlyConstruction();
+//    performanceProblem();
 
     for(i = 0; i < 10; i++) {
         printf("\n");
@@ -124,6 +127,29 @@ void testSet() {
 }
 
 /////////////////////////////////// Test Functions Below ///////////////////////////////////
+
+/**
+ * Test the performance that a program can do best.
+ */
+void performanceProblem() {
+    long arrayLength = 1;
+
+    long* longArray = NULL;
+
+    // maximum long[] length: 489000001(windows 10), 1744000001(deepin)
+
+    while(1) {
+        longArray = (long*)malloc(sizeof(long) * arrayLength);
+        if(longArray == NULL) {
+            printf("Memory not enough. \n");
+            exit(-1);
+        } else {
+            printf(" - got array - length: %ld\n", arrayLength);
+        }
+        free(longArray);
+        arrayLength = arrayLength + 1E6;
+    }
+}
 
 /**
  * Test steps of construction of CSA - directly build.
@@ -177,6 +203,7 @@ void directlyConstruction() {
     free(SA);
     free(SA_inverse);
     free(Psi);
+    printf("direct construction ended. \n");
 }
 
 /**
