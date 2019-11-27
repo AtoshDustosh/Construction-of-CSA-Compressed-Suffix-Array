@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_1000.txt";   // file path
+char* FILEPATH = "testdata_300.txt";   // file path
 long ARRAYLENGTH = 0; // length of T ~ n
 long PARTLENGTH = 0; // part length of T ~ l
 long PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -39,6 +39,7 @@ int main() {
      *  this bug may have been fixed, but I'm not sure.
      */
     testSet();
+    return 0;
 
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
@@ -68,9 +69,9 @@ int main() {
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
-        mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
-        mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
-        mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
+        mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, partIndex);
+        mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
+        mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
         printf("\n");
         free(order);
     }
@@ -124,8 +125,8 @@ void testSet() {
 //    _fgpsiFuncTest();
 
 //    readAndPrint();
-    directlyConstruction();
-//    performanceProblem();
+//    directlyConstruction();
+    performanceProblem();
 
     for(i = 0; i < 10; i++) {
         printf("\n");
@@ -138,10 +139,11 @@ void testSet() {
  * Test the performance that a program can do best.
  */
 void performanceProblem() {
+    long i = 0;
     long arrayLength = 100;
+    int integerValue = 0;
 
     long* longArray = NULL;
-    long array1[1045000];
 
     // maximum long[] length: 489000001(windows 10), 1744000001(deepin)
 
@@ -149,20 +151,24 @@ void performanceProblem() {
         longArray = (long*)malloc(sizeof(long) * arrayLength);
         if(longArray == NULL) {
             printf("Memory not enough. \n");
-            exit(-1);
+            break;
         } else {
             printf(" - got array - length: %ld\n", arrayLength);
         }
-        long i = 0;
-        for(i = 0; i < arrayLength; i++ ){
-            longArray[i] = i;
-            i = i + arrayLength / 1000;
-        }
         free(longArray);
-        arrayLength = arrayLength + 1E6;
+        arrayLength = arrayLength + 1E7;
     }
 
-    free(array1);
+    integerValue = 0;
+    arrayLength = integerValue;
+    while(1){
+        printf("%d\n", integerValue += 1000000);
+        if(integerValue < arrayLength){
+            break;
+        }
+        arrayLength = integerValue;
+    }
+
 }
 
 /**
@@ -213,6 +219,10 @@ void directlyConstruction() {
     }
     printf("\n");
 
+    free(T);
+    free(SA);
+    free(SA_inverse);
+    free(Psi);
     printf("direct construction ended. \n");
 }
 
@@ -250,6 +260,7 @@ void readAndPrint() {
         printf("failed to open file %s", FILEPATH);
     }
     printf("dataLength: %ld\n", ARRAYLENGTH);
+    free(fp);
 }
 
 

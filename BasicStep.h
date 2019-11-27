@@ -26,27 +26,23 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
 
     // load the DNA sequence
     loadFnaData(filePath, arrayLength, T);
-    printf("The whole DNA sequence plus a \'$\':\n");
+//    printf("The whole DNA sequence plus a \'$\':\n");
 //    for(i = 0; i < arrayLength; i++) {
 //        printf("%c", T[i]);
 //    }
-
-    printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
-    for(i = bi; i < arrayLength; i++) {
-        printf("%c", T[i]);
-    }
-
-    printf("\n\n");
 
     localT = (char*)malloc(sizeof(char) * localLength);
     localSA = (long*)malloc(sizeof(long) * localLength);
     localSA_inverse = (long*)malloc(sizeof(long) * localLength);
     localPsi = (long*)malloc(sizeof(long) * localLength);
 
+    printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
     for(i = bi; i < arrayLength; i++) {
+        printf("%c", T[i]);
         localT[i - bi] = T[i];
         localSA[i - bi] = i - bi;
     }
+    printf("\n\n");
 
     suffixArrayQuickSort(localSA, localT, 0, localLength - 1);
 //    for(i = 0; i < localLength; i++){

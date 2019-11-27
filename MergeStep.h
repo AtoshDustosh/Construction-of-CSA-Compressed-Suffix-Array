@@ -8,12 +8,17 @@
 #include "SABuildFunc.h"
 #include "HelperFunction.h"
 
-void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partNum, long partIndex);
+void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partIndex);
 void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
-                long partNum, long partIndex, long* order);
+                long partIndex, long* order);
 void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
-                long partNum, long partIndex, long* order);
-
+                long partIndex, long* order);
+void processFuncF(char* T, long* SA, long* order, long arrayLength, long partLength, long partIndex,
+                  long* fFunc);
+void processFuncG(char* T, long* SA, long* order, long arrayLength, long partLength, long partIndex,
+                  long* gFunc);
+void processFuncPsi(char* T, long* SA, long* Psi, long arrayLength, long partLength, long partIndex,
+                    long* psiFunc, long* fFunc, long* gFunc);
 void _fgpsiFuncTest();
 
 
@@ -24,11 +29,9 @@ void _fgpsiFuncTest();
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
- * @param partNum number of parts
  * @param partIndex index of this part
  */
-void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partNum,
-                long partIndex) {
+void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partIndex) {
     printf("Merge Step (a)\n");
     long i = 0;
     long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
@@ -41,7 +44,7 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
     char* T_i = (char*)malloc(sizeof(char) * (arrayLength - bi_i));
     long* localSA = (long*)malloc(sizeof(long) * (arrayLength - bi_i));
 
-    if(T_i == NULL || localSA == NULL){
+    if(T_i == NULL || localSA == NULL) {
         printf("System memory not enough. \n");
         exit(-1);
     }
@@ -86,13 +89,12 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
  * @param Psi Psi array of T
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
- * @param partNum number of parts
  * @param partIndex index of this part
  * @param order order[] that stores result of func order(suf_k, T'), where suf_k is the
  *      k-th longest suffix of T_i and T' is combination of T_(i+1)...T_([n/l|+]).
  */
 void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
-                long partNum, long partIndex, long* order) {
+                long partIndex, long* order) {
     printf("Merge Step (b)\n");
     long i = 0;
     long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
@@ -173,13 +175,12 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
  * @param Psi Psi array of T -- the results is stored in this array
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
- * @param partNum number of parts
  * @param partIndex index of this part
  * @param order order[] that stores result of func order(suf_k, T'), where suf_k is the
  *      k-th longest suffix of T_i and T' is combination of T_(i+1)...T_([n/l|+]).
  */
 void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
-                long partNum, long partIndex, long* order) {
+                long partIndex, long* order) {
     printf("Merge Step (c)\n");
     long i = 0;
     long j = 0;
@@ -193,15 +194,47 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     long num = 0;
     long maxIndex = 0;
 
-    if(fFunc == NULL || gFunc == NULL || psiFunc == NULL){
+    if(fFunc == NULL || gFunc == NULL || psiFunc == NULL) {
         printf("System memory not enough. \n");
         exit(-1);
     }
 
     // construction of func f
+    processFuncF(T, SA, order, arrayLength, partLength, partIndex, fFunc);
+
+    // construction of func g
+    processFuncG(T, SA, order, arrayLength, partLength, partIndex, gFunc);
+
+    // construction of func Psi
+    processFuncPsi(T, SA, Psi, arrayLength, partLength, partIndex, psiFunc, fFunc, gFunc);
+
+    // update SA[] of T[] to get ready for next iteration
+    printf("Update SA[] of T[] to get ready for next iteration. \n");
+    for(i = bi_i; i < arrayLength; i++) {
+        SA[i] = i;
+    }
+    suffixArrayQuickSort(SA, T, bi_i, arrayLength - 1);
+
+    free(fFunc);
+    free(gFunc);
+    free(psiFunc);
+
+}
+
+/**
+ * A function used for processing func f.
+ */
+void processFuncF(char* T, long* SA, long* order, long arrayLength, long partLength, long partIndex,
+                  long* fFunc) {
+    long i = 0;
+    long j = 0;
+    long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
+    long bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
+
+    // construction of func f
     printf("Calculating func f ...\n");
-    num = 0;
-    maxIndex = 0;
+    long num = 0;
+    long maxIndex = 0;
     // calculate by lex-order for the convenience of calculating #(order(suf_k, T') <= j)
     for(i = 0; i < arrayLength - bi_apostrophe; i++) {
 //        printf("//****\n");
@@ -233,11 +266,22 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         printf("%ld\t%c\t%ld\n", i, T[SA[i + bi_apostrophe]],
                fFunc[SA[i + bi_apostrophe] - bi_apostrophe]);
     }
+}
 
-    // construction of func g
+/**
+ * A function used for processing func g.
+ */
+void processFuncG(char* T, long* SA, long* order, long arrayLength, long partLength, long partIndex,
+                  long* gFunc) {
+    long i = 0;
+    long j = 0;
+    long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
+    long bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
+
+    long num = 0;
+    long maxIndex = 0;
+
     printf("Calculating func g ...\n");
-    num = 0;
-    maxIndex = 0;
     // calculate by lex-order for the convenience of calculating #(suf_k <= suf_i)
     for(i = 0; i < partLength; i++) {
         long orderValue_i = order[SA[i + bi_i] - bi_i];
@@ -264,6 +308,22 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     }
 
 
+}
+
+
+/**
+ * A function used for processing func psi.
+ */
+void processFuncPsi(char* T, long* SA, long* Psi, long arrayLength, long partLength, long partIndex,
+                    long* psiFunc, long* fFunc, long* gFunc) {
+    long i = 0;
+    long j = 0;
+    long bi_i = (partIndex - 1) * partLength;   // beginIndex_i
+    long bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
+
+    long num = 0;
+    long maxIndex = 0;
+
     // construction of func Psi
     printf("Calculating func psi ...\n");
     long t = 0;
@@ -280,13 +340,6 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     }
     psiFunc[0] = gFunc[0];  // this is necessary for fixing the bug
 
-    // update SA[] of T[] to get ready for next iteration
-    printf("Update SA[] of T[] to get ready for next iteration. \n");
-    for(i = bi_i; i < arrayLength; i++) {
-        SA[i] = i;
-    }
-    suffixArrayQuickSort(SA, T, bi_i, arrayLength - 1);
-
     printf("///////\n");
     printf("i\tch\t");
     printf("SA[]\tch_SA\t");
@@ -295,20 +348,14 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     for(i = bi_i; i < arrayLength; i++) {
 //         update the original Psi func
         Psi[i] = psiFunc[i - bi_i] + bi_i;
-        if(i % partLength == 0){
+        if(i % partLength == 0) {
             printf("%ld\t%c\t", i - bi_i, T[i]);
             printf("%ld\t%c\t", SA[i] - bi_i, T[SA[i]]);
             printf("%ld\t", Psi[i] - bi_i);
             printf("\n");
         }
     }
-
-    free(fFunc);
-    free(gFunc);
-    free(psiFunc);
-
 }
-
 
 void _fgpsiFuncTest() {
     printf("************** _fgpsiFuncTest **************\n");
