@@ -44,6 +44,7 @@ long loadFnaData(char* filePath, long arrayLength, char* T) {
     }
     // add '$' to the end of the DNA seq
     T[fnaDataPointer++] = '$';
+    free(fp);
     return fnaDataPointer;
 }
 
@@ -74,6 +75,7 @@ long fnaDataSize(char* filePath) {
     } else {
         printf("failed to open file %s", filePath);
     }
+    free(fp);
     return dataLength;
 }
 

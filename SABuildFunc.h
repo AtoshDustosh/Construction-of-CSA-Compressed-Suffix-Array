@@ -17,7 +17,7 @@ void _inverseSAWholeTest();
 void _psiArrayBuildWholeTest();
 void _binarySearchBoundTest();
 void _CSABinaryBoundSearchTest();
-//void _CSABinarySearchOrderValueTest();    // this test is unnecessary ... perhaps
+void _CSABinarySearchOrderValueTest();    // this test is unnecessary ... perhaps
 
 
 /*
@@ -49,7 +49,7 @@ void suffixArrayQuickSort(long SA[], char T[], long left, long right) {
     }
     long i = left;
     long j = right;
-    int key = SA[left]; // the key-suffix starts at SA[left]
+    long key = SA[left]; // the key-suffix starts at SA[left]
 
     while(i < j) {
         // find the suffix that is smaller than key-suffix in right part
@@ -84,14 +84,14 @@ void suffixArrayQuickSort(long SA[], char T[], long left, long right) {
  */
 int compareSuffix(long i, long j, char T[]) {
 //    printf("comparing suffix(%d, %c, %d) and suffix(%d, %c, %d)\n", i, T[i], T[i], j, T[j], T[j]);
-    while(T[i] != '\0' && T[j] != '\0') {
-        if(T[i] == '$' && T[j] == '$') {
+    while(1) {
+        if((T[i] == '$' && T[j] == '$') || (T[i] == '\0' && T[j] == '\0')) {
             // if suffix[i] and suffix[j] both end, suffix[i] = suffix[j]
             return 0;
-        } else if(T[i] == '$' && T[j] != '$') {
+        } else if((T[i] == '$' && T[j] != '$') || (T[i] == '\0' && T[j] != '\0')) {
             // if suffix[i] ends first, suffix[i] < suffix[j]
             return -1;
-        } else if(T[i] != '$' && T[j] == '$') {
+        } else if((T[i] != '$' && T[j] == '$') || (T[i] != '\0' && T[j] == '\0')) {
             // if suffix[j] ends first, suffix[i] > suffix[j]
             return 1;
         }
@@ -105,8 +105,6 @@ int compareSuffix(long i, long j, char T[]) {
             return 1;
         }
     }
-
-    return 0;   // when all letters in 2 strings are equal
 }
 
 /**
@@ -145,8 +143,8 @@ void inverseSAWhole(long SA[], long SA_inverse[], long length) {
  *
  * @param chArray a char array sorted by lex-order
  * @param c character whose bounds are to be searched for
- * @param left initial left bound
- * @param right initial right bound
+ * @param / @return left left bound
+ * @param / @return right right bound
  */
 void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
     long leftBorder = *left;
@@ -207,8 +205,8 @@ void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
  * @param T DNA sequence plus a '$'
  * @param SA SA of T in the designated interval
  * @param c character whose bounds are to be searched for
- * @param left initial left bound
- * @param right initial right bound
+ * @param / @return left left bound
+ * @param / @return right right bound
  */
 void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
     long leftBorder = *left;
@@ -273,27 +271,34 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
  * @param lc left bound of the interval
  * @param rc right bound of the interval
  * @param prevOrderValue value of previous order func, which actually is order(X, T')
- * @param max_b a pointer to maximum b
+ * @param / @return max_b a pointer to maximum b; returns -1 if there is no such b
  */
 void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevOrderValue,
                                long* max_b) {
-    // find the right bound
-    while(lc < rc) {
+//    printf("\n");
+//     find the right bound
+    while(lc <= rc) {
         long mid = lc + (rc - lc) / 2;
-        long midCh = Psi[SA[mid]];
+        long midValue = Psi[mid];
+//        printf("midValue(%ld), lcValue(%ld), rcValue(%ld)\n", midValue, Psi[lc], Psi[rc]);
         if(mid == lc) {
-            if(Psi[SA[rc]] <= prevOrderValue) {
-                break;
+            // process the last cases
+            if(midValue <= prevOrderValue) {
+                if(Psi[rc] > prevOrderValue) {
+                    *max_b = mid;
+                } else {
+                    *max_b = rc;
+                }
             } else {
-                rc--;
+                *max_b = -1;
             }
-        } else if(midCh <= prevOrderValue) {
+            return;
+        } else if(midValue <= prevOrderValue) {
             lc = mid;
-        } else if(midCh > prevOrderValue) {
+        } else if(midValue > prevOrderValue) {
             rc = mid;
         }
     }
-    *max_b = rc;
 }
 
 
@@ -303,7 +308,52 @@ void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevO
 //////////////////////////////////////// the following funcs will not be used ///////////////////////////////
 
 
+/**
+ * Test binary search order value.
+ */
+void _CSABinarySearchOrderValueTest() {
+    printf("*********** _CSABinarySearchOrderValueTest ***********\n");
+    long i = 0;
+    char* T_apostrophe = "cagac$";
+    char* T_i = "gca";
+    long SA_apostrophe[6] = {5, 3, 1, 4, 0, 2};
+    long Psi_apostrophe[6] = {4, 3, 5, 0, 2, 1};
+    long iLength = strlen(T_i);
+    long apostropheLength = strlen(T_apostrophe);
+    long* order = (long*)malloc(sizeof(long) * iLength);
 
+    long prevOrderValue = 4;
+    for(i = iLength - 1; i >= 0; i--) {
+        char c = T_i[i];  // the character in the formula
+        long lc = 0;
+        long rc = apostropheLength - 1;
+        long orderValue = 0;
+        CSABinaryBoundSearch(T_apostrophe, SA_apostrophe, c, &lc, &rc);
+        // T[SA[lc]] ~ T[SA[rc]] represents the field of c
+        // implement of condition ¡Á[b] -> ¡Á[SA[b]], lc <= b <= rc
+        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc, rc);
+
+        if(lc > rc) {
+            orderValue = lc - 1;   // this is modified ... on my own will
+        } else {
+            // find the max b that satisfies condition that for any order(cX, T'), Psi_T'[b] <= order(X, T')
+            long max_b = 0;
+            CSABinarySearchOrderValue(SA_apostrophe, Psi_apostrophe, lc, rc, prevOrderValue, &max_b);
+            if(max_b == -1) {
+                orderValue = lc - 1;
+            } else {
+                orderValue = max_b;
+            }
+        }
+
+        printf("prevOrderValue: %ld\torderValue(%ld): %ld\t", prevOrderValue, i, orderValue);
+
+        order[i] = orderValue;
+        prevOrderValue = orderValue;
+
+        printf("\n");
+    }
+}
 
 /**
  * Test binary search bound.
@@ -388,16 +438,17 @@ void _quickSortTest() {
  */
 void _suffixArrayQuickSortTest() {
     printf("\n ******* Suffix Array Quick Sort Test *********\n");
+    long i = 0;
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
+    long sortLength = strlen(T);
     printf("total array: %s\n", T);
 
-    suffixArrayQuickSort(SA, T, 0, 7);
+    suffixArrayQuickSort(SA, T, 0, sortLength - 1);
 
-    printf("sorted suffix array: ");
-    long i = 0;;
-    for( i = 0; i < 8; i++) {
-        printf("%ld ", SA[i]);
+    printf("sorted suffix array\n");
+    for( i = 0; i < sortLength; i++) {
+        printf("%ld\t%c\n", SA[i], T[SA[i]]);
     }
     printf("\n");
 }
@@ -406,10 +457,18 @@ void _suffixArrayQuickSortTest() {
  * Test comparing suffixes.
  */
 void _compareSuffixTest() {
-    char T[] = "aabcdabcdefg";
+    printf("\n ************ Compare Suffix Test ************n");
+    char* T = "aabcdabcdefg";
     int result = compareSuffix(0, 5, T);
+
     printf("result: %d\n", result);
-    printf("result should be -1\n");
+    printf("result should be %d\n", strcmp("aabcdabcdefg", "abcdefg"));
+
+    T = "cttagctt";
+    result = compareSuffix(0, 5, T);
+    printf("result: %d\n", result);
+    printf("result should be %d\n", strcmp("cttagctt", "ctt"));
+
 }
 
 /**

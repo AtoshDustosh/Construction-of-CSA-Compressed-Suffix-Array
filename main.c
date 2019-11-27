@@ -33,12 +33,7 @@ void readAndPrint();
 
 int main() {
     long i = 0;
-    testSet();
 
-    /**
-     * \TODO fix the bug
-     */
-    return 0;
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %ld\n", ARRAYLENGTH);
@@ -55,7 +50,7 @@ int main() {
     i = PARTNUM;
     baseStep(FILEPATH, T, SA, SA_inverse, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM);
 
-    for(i = PARTNUM - 1; i > 6; i--) {
+    for(i = PARTNUM - 1; i > 0; i--) {
         printf("\nincrement part (%ld)\n", i);
         long partIndex = i; // T_i and T_apostrophe is stored using partIndex
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
@@ -66,21 +61,19 @@ int main() {
         mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
     }
 
+
+    /**
+     * \TODO strange bug - if I put this func before the first func in main() which is fnaDataSize(...)
+     *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
+     */
+//    testSet();
+
     return 0;
 }
 
+
+
 ////////////////////////////////// Actually Working Funcs //////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -91,26 +84,34 @@ int main() {
  * and execute this function.
  */
 void testSet() {
-//    int arrayTest[3] = {1, 2, 3};
+
+    int i = 0;
+    for(i = 0; i < 20; i++) {
+        printf("\n");
+    }
 
 //    _CLanguageReview();
 //    _mathematicalFuncsTest();
 //    _mathematicalFuncsTest();
 //    _mathematicalFuncsTest();
-//    _globalVariableInHeaderFile(arrayTest);
 //    _quickSortTest();
 //    _myStrLengthTest();
-//    _suffixArrayQuickSortTest();
+    _suffixArrayQuickSortTest();
 //    _compareSuffixTest();
-//    _inverseSATest();
-//    _psiArrayBuildTest();
+//    _inverseSAWholeTest();
+//    _psiArrayBuildWholeTest();
 //    _lowerCaseTest();
 //    _binarySearchBoundTest();
 //    _CSABinaryBoundSearchTest();
+    _CSABinarySearchOrderValueTest();
     _fgpsiFuncTest();
-
+//
 //    readAndPrint();
-//    directlyConstruction();
+    directlyConstruction();
+
+    for(i = 0; i < 20; i++) {
+        printf("\n");
+    }
 }
 
 /////////////////////////////////// Test Functions Below ///////////////////////////////////
@@ -157,8 +158,9 @@ void directlyConstruction() {
     inverseSAWhole(SA, SA_inverse, ARRAYLENGTH);
     printf("Psi array - Psi[]: \n");
     psiArrayBuildWhole(SA, SA_inverse, Psi, ARRAYLENGTH);
+    printf("i\tPsi[]\tT[SA[]]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
-        printf("%ld\t%ld\t%c\n", i, Psi[i], T[Psi[i]]);
+        printf("%ld\t%ld\t%c\n", i, Psi[i], T[SA[i]]);
     }
     printf("\n");
 
