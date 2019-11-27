@@ -27,9 +27,9 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
     // load the DNA sequence
     loadFnaData(filePath, arrayLength, T);
     printf("The whole DNA sequence plus a \'$\':\n");
-    for(i = 0; i < arrayLength; i++) {
-        printf("%c", T[i]);
-    }
+//    for(i = 0; i < arrayLength; i++) {
+//        printf("%c", T[i]);
+//    }
 
     printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
     for(i = bi; i < arrayLength; i++) {
@@ -64,17 +64,21 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
     }
 
     // print the sorted first increment
-    printf("index\tch\tSA\tch_SA\tSA_inv\tPsi\n");
-    for(i = bi; i < arrayLength; i++) {  // complicated version
-        printf("%ld\t", i - bi);
-        printf("%c\t", T[i]);
-        printf("%ld\t", SA[i] - bi);
-        printf("%c\t", T[SA[i]]);
-        printf("%ld\t", SA_inverse[i] - bi);
-        printf("%ld\t", Psi[i] - bi);
-        printf("\n");
-    }
+//    printf("index\tch\tSA\tch_SA\tSA_inv\tPsi\n");
+//    for(i = bi; i < arrayLength; i++) {  // complicated version
+//        printf("%ld\t", i - bi);
+//        printf("%c\t", T[i]);
+//        printf("%ld\t", SA[i] - bi);
+//        printf("%c\t", T[SA[i]]);
+//        printf("%ld\t", SA_inverse[i] - bi);
+//        printf("%ld\t", Psi[i] - bi);
+//        printf("\n");
+//    }
 
+    free(localSA);
+    free(localSA_inverse);
+    free(localT);
+    free(localPsi);
 }
 
 #endif // BASESTEP_H_INCLUDED

@@ -20,6 +20,7 @@ long loadFnaData(char* filePath, long dataLength, char* T);
  * @param T[] array used for storing data (ending with '$')
  */
 long loadFnaData(char* filePath, long arrayLength, char* T) {
+    printf("Loading data ... \n");
     FILE* fp = fopen(filePath, "r");
     int ifData = 0;
     long fnaDataPointer = 0;
@@ -54,6 +55,7 @@ long loadFnaData(char* filePath, long arrayLength, char* T) {
  * @param filePath file path
  */
 long fnaDataSize(char* filePath) {
+    printf("Calculating size of the fna data file ... \n");
     FILE* fp = fopen(filePath, "r");
     int ifData = 0;   // if the file pointer is now in the data part
     long dataLength = 0;

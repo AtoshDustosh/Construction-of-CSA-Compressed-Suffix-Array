@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_2.txt";   // file path
+char* FILEPATH = "testdata_500.txt";   // file path
 long ARRAYLENGTH = 0; // length of T ~ n
 long PARTLENGTH = 0; // part length of T ~ l
 long PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -32,6 +32,13 @@ void readAndPrint();
 int main() {
     long i = 0;
 
+    /**
+     * \note strange bug - I once put testSet() before the first func in main() which is fnaDataSize(...)
+     *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
+     *  this bug may have been fixed, but I'm not sure.
+     */
+    testSet();
+
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %ld\n", ARRAYLENGTH);
@@ -45,11 +52,17 @@ int main() {
     SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
     Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
 
+    if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL){
+        printf("System memory not enough. \n");
+        exit(-1);
+    }
+
     i = PARTNUM;
     baseStep(FILEPATH, T, SA, SA_inverse, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM);
 
+    printf("\n");
     for(i = PARTNUM - 1; i > 0; i--) {
-        printf("\nincrement part (%ld)\n", i);
+        printf("increment part (%ld)\n", i);
         long partIndex = i; // T_i and T_apostrophe is stored using partIndex
         long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
@@ -57,13 +70,15 @@ int main() {
         mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex);
         mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
         mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
+        printf("\n");
     }
 
-    /**
-     * \TODO strange bug - if I put this func before the first func in main() which is fnaDataSize(...)
-     *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
-     */
-    testSet();
+    printf("i\tSA[i]\tT_SA[]\tPsi[i]\n");
+    for(i = 0; i < ARRAYLENGTH; i++) {
+        if(i % PARTLENGTH == 0) {
+            printf("%ld\t%ld\t%c\t%ld\n", i, SA[i], T[SA[i]], Psi[i]);
+        }
+    }
 
     return 0;
 }
@@ -83,9 +98,6 @@ int main() {
 void testSet() {
 
     int i = 0;
-    for(i = 0; i < 20; i++) {
-        printf("\n");
-    }
 
 //    _CLanguageReview();
 //    _mathematicalFuncsTest();
@@ -93,20 +105,20 @@ void testSet() {
 //    _mathematicalFuncsTest();
 //    _quickSortTest();
 //    _myStrLengthTest();
-    _suffixArrayQuickSortTest();
+//    _suffixArrayQuickSortTest();
 //    _compareSuffixTest();
 //    _inverseSAWholeTest();
 //    _psiArrayBuildWholeTest();
 //    _lowerCaseTest();
 //    _binarySearchBoundTest();
 //    _CSABinaryBoundSearchTest();
-    _CSABinarySearchOrderValueTest();
-    _fgpsiFuncTest();
+//    _CSABinarySearchOrderValueTest();
+//    _fgpsiFuncTest();
 //
 //    readAndPrint();
     directlyConstruction();
 
-    for(i = 0; i < 20; i++) {
+    for(i = 0; i < 10; i++) {
         printf("\n");
     }
 }
@@ -120,6 +132,7 @@ void testSet() {
  * To solve this problem, use (long*)malloc(sizeof(long)*ARRAYLENGTH).
  */
 void directlyConstruction() {
+    long i = 0;
     ARRAYLENGTH = fnaDataSize(FILEPATH);
     printf("data length: %ld\n", ARRAYLENGTH);
 
@@ -130,11 +143,10 @@ void directlyConstruction() {
     loadFnaData(FILEPATH, ARRAYLENGTH, temp);
 
     printf("DNA sequence - T[]: \n");
-    long i = 0;
-    for(i = 0; i < ARRAYLENGTH; i++) {
-        printf("%c", T[i]);
-    }
-    printf("\n");
+//    for(i = 0; i < ARRAYLENGTH; i++) {
+//        printf("%c", T[i]);
+//    }
+//    printf("\n");
 
     // build SA[] - suffix array
     long* SA = (long*)malloc(sizeof(long) * ARRAYLENGTH);
@@ -143,10 +155,10 @@ void directlyConstruction() {
     }
     suffixArrayQuickSort(SA, T, 0, ARRAYLENGTH - 1);
     printf("Suffix array - SA[]: \n");
-    for(i = 0; i < ARRAYLENGTH; i++) {
-        printf("%ld\t%ld\t%c\n", i, SA[i], T[SA[i]]);
-    }
-    printf("\n");
+//    for(i = 0; i < ARRAYLENGTH; i++) {
+//        printf("%ld\t%ld\t%c\n", i, SA[i], T[SA[i]]);
+//    }
+//    printf("\n");
 
     // build Psi[] - ... Psi array (I don't know how to describe it)
     long* SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
@@ -156,7 +168,7 @@ void directlyConstruction() {
     printf("Psi array - Psi[]: \n");
     psiArrayBuildWhole(SA, SA_inverse, Psi, ARRAYLENGTH);
     printf("i\tPsi[]\tT[SA[]]\n");
-    for(i = 0; i < ARRAYLENGTH; i++) {
+    for(i = 0; i < ARRAYLENGTH; i = i + ARRAYLENGTH / 10) {
         printf("%ld\t%ld\t%c\n", i, Psi[i], T[SA[i]]);
     }
     printf("\n");

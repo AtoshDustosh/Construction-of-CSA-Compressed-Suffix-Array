@@ -41,6 +41,11 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
     char* T_i = (char*)malloc(sizeof(char) * (arrayLength - bi_i));
     long* localSA = (long*)malloc(sizeof(long) * (arrayLength - bi_i));
 
+    if(T_i == NULL || localSA == NULL){
+        printf("System memory not enough. \n");
+        exit(-1);
+    }
+
     // initialize array T_i and localSA
     for(i = bi_i; i < arrayLength; i++) {
         long locali = i - bi_i;
@@ -51,19 +56,22 @@ void mergeStepA(char* T, long* SA, long arrayLength, long partLength, long partN
     suffixArrayQuickSort(localSA, T_i, 0, partLength - 1);
 
     // copy sorted suffixes' indexes and their inverse to SA and SA_inverse
-    printf("sorted suffixes(%ld): \n", partIndex);
-    printf("begin_index: %ld\n", bi_i);
-    printf("i\tch\tSA[]\tch_SA\n");
+//    printf("sorted suffixes(%ld): \n", partIndex);
+//    printf("begin_index: %ld\n", bi_i);
+//    printf("i\tch\tSA[]\tch_SA\n");
     for(i = bi_i; i < bi_apostrophe; i++) {
         long locali = i - bi_i;
         SA[i] = localSA[locali] + bi_i;
 
-        printf("%ld\t", i - bi_i);
-        printf("%c\t", T[i]);
-        printf("%ld\t", SA[i] - bi_i);
-        printf("%c\t", T[SA[i]]);
-        printf("\n");
+//        printf("%ld\t", i - bi_i);
+//        printf("%c\t", T[i]);
+//        printf("%ld\t", SA[i] - bi_i);
+//        printf("%c\t", T[SA[i]]);
+//        printf("\n");
     }
+
+    free(T_i);
+    free(localSA);
 }
 
 /**
@@ -101,7 +109,7 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
         CSABinaryBoundSearch(T, SA, c, &lc, &rc);
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
         // implement of condition ×[b] -> ×[SA[b]], lc <= b <= rc
-        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc - bi_apostrophe, rc - bi_apostrophe);
+//        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc - bi_apostrophe, rc - bi_apostrophe);
 
         if(lc > rc) {
             orderValue = lc - 1 - bi_apostrophe;
@@ -117,42 +125,40 @@ void mergeStepB(char* T, long* SA, long* Psi, long arrayLength, long partLength,
             }
         }
 
-        printf("prevOrderValue: %ld\torderValue(%ld): %ld\t", prevOrderValue - bi_apostrophe, i - bi_i,
-               orderValue);
+//        printf("prevOrderValue: %ld\torderValue(%ld): %ld\t", prevOrderValue - bi_apostrophe, i - bi_i,
+//               orderValue);
 
         order[i - bi_i] = orderValue;
         prevOrderValue = orderValue + bi_apostrophe;
 
-        printf("\n");
+//        printf("\n");
     }
 
-    printf("sorted T\': ");
-    for(i = bi_apostrophe; i < arrayLength; i++) {
-        printf("%c", T[SA[i]]);
-    }
-    printf("\n");
-
-    printf("unsorted T\': ");
-    for(i = bi_apostrophe; i < arrayLength; i++) {
-        printf("%c", T[i]);
-    }
-    printf("\n");
-
-    printf("T_i: ");
-    for(i = bi_i; i < bi_apostrophe; i++) {
-        printf("%c", T[i]);
-    }
-    printf("\n");
-
-    printf("For sorted suf_k[] ...\n");
-    for(i = 0; i < partLength; i++) {
-        printf("suf[%ld](%ld) ~ %c...\torder(suf[%ld], T\'): %ld\n", i, SA[i + bi_i] - bi_i,
-               T[SA[i + bi_i]], i, order[SA[i + bi_i] - bi_i]);
-    }
-
-
-
-    printf("\n");
+//    printf("sorted T\': ");
+//    for(i = bi_apostrophe; i < arrayLength; i++) {
+//        printf("%c", T[SA[i]]);
+//    }
+//    printf("\n");
+//
+//    printf("unsorted T\': ");
+//    for(i = bi_apostrophe; i < arrayLength; i++) {
+//        printf("%c", T[i]);
+//    }
+//    printf("\n");
+//
+//    printf("T_i: ");
+//    for(i = bi_i; i < bi_apostrophe; i++) {
+//        printf("%c", T[i]);
+//    }
+//    printf("\n");
+//
+//    printf("For sorted suf_k[] ...\n");
+//    for(i = 0; i < partLength; i++) {
+//        printf("suf[%ld](%ld) ~ %c...\torder(suf[%ld], T\'): %ld\n", i, SA[i + bi_i] - bi_i,
+//               T[SA[i + bi_i]], i, order[SA[i + bi_i] - bi_i]);
+//    }
+//
+//    printf("\n");
 
 }
 
@@ -187,19 +193,24 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     long num = 0;
     long maxIndex = 0;
 
+    if(fFunc == NULL || gFunc == NULL || psiFunc == NULL){
+        printf("System memory not enough. \n");
+        exit(-1);
+    }
+
     // construction of func f
     printf("Calculating func f ...\n");
     num = 0;
     maxIndex = 0;
     // calculate by lex-order for the convenience of calculating #(order(suf_k, T') <= j)
     for(i = 0; i < arrayLength - bi_apostrophe; i++) {
-        printf("//****\n");
+//        printf("//****\n");
         // make use of the increasing values of order with increasing lex-order
         for(j = maxIndex; j < partLength; j++) {
             long orderValue = order[SA[j + bi_i] - bi_i];
 
-            printf("suf[%ld](%c)\t", j, T[SA[j + bi_i]]);
-            printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
+//            printf("suf[%ld](%c)\t", j, T[SA[j + bi_i]]);
+//            printf("order(suf[%ld], T\'): %ld\n", j, orderValue);
             /**
              * \caution the original is ">"
              */
@@ -211,14 +222,14 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
             }
         }
 
-        printf("f[%ld](%c): %ld\n", SA[i + bi_apostrophe] - bi_apostrophe,
-               T[SA[i + bi_apostrophe]], i + num);
+//        printf("f[%ld](%c): %ld\n", SA[i + bi_apostrophe] - bi_apostrophe,
+//               T[SA[i + bi_apostrophe]], i + num);
         fFunc[SA[i + bi_apostrophe] - bi_apostrophe] = i + num;
     }
 
     printf("///////\n");
     printf("i\tch\tfunc f[]\n");
-    for(i = 0; i < arrayLength - bi_apostrophe; i++) {
+    for(i = 0; i < arrayLength - bi_apostrophe; i = i + (arrayLength - bi_apostrophe) / 10) {
         printf("%ld\t%c\t%ld\n", i, T[SA[i + bi_apostrophe]],
                fFunc[SA[i + bi_apostrophe] - bi_apostrophe]);
     }
@@ -238,15 +249,18 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
                 num++;
             }
         }
-        printf("g[%ld](%c): %ld\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]],
-               orderValue_i + num);
+//        printf("g[%ld](%c): %ld\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]],
+//               orderValue_i + num);
         gFunc[SA[i + bi_i] - bi_i] = orderValue_i + num;
     }
 
     printf("///////\n");
-    printf("i\tch\tfunc g[]\n");
-    for(i = 0; i < partLength; i++) {
-        printf("%ld\t%c\t%ld\n", i, T[i + bi_i], gFunc[i]);
+    printf("i\tch\tSA\tch_SA\tg_SA[]\n");
+    for(i = 0; i < partLength; i = i + partLength / 10) {
+        printf("%ld\t%c\t", i, T[i + bi_i]);
+        printf("%ld\t%c\t", SA[i + bi_i], T[SA[i + bi_i]]);
+        printf("%ld\t", gFunc[SA[i + bi_i] - bi_i]);
+        printf("\n");
     }
 
 
@@ -273,21 +287,24 @@ void mergeStepC(char* T, long* SA, long* Psi, long arrayLength, long partLength,
     }
     suffixArrayQuickSort(SA, T, bi_i, arrayLength - 1);
 
-    printf("///////\n");
-    printf("i\tch\t");
-    printf("SA[]\tch_SA\t");
-    printf("Psi[]\t");
-    printf("\n");
+//    printf("///////\n");
+//    printf("i\tch\t");
+//    printf("SA[]\tch_SA\t");
+//    printf("Psi[]\t");
+//    printf("\n");
     for(i = bi_i; i < arrayLength; i++) {
 //        printf("%ld\t%c\t%ld\n", i, T[i], psiFunc[i - bi_i]);
-        // update the original Psi func
+//         update the original Psi func
         Psi[i] = psiFunc[i - bi_i] + bi_i;
-        printf("%ld\t%c\t", i - bi_i, T[i]);
-        printf("%ld\t%c\t", SA[i] - bi_i, T[SA[i]]);
-        printf("%ld\t", Psi[i] - bi_i);
-        printf("\n");
+//        printf("%ld\t%c\t", i - bi_i, T[i]);
+//        printf("%ld\t%c\t", SA[i] - bi_i, T[SA[i]]);
+//        printf("%ld\t", Psi[i] - bi_i);
+//        printf("\n");
     }
 
+    free(fFunc);
+    free(gFunc);
+    free(psiFunc);
 
 }
 
