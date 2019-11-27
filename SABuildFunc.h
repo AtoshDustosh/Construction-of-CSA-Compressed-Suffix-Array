@@ -416,7 +416,7 @@ void _CSABinaryBoundSearchTest() {
     }
     printf("\n");
 
-    printf("length: %d\n", strlen(T));
+    printf("length: %d\n", (int)strlen(T));
 
     c = 'g';
     left = 0;
@@ -451,13 +451,13 @@ void _binarySearchBoundTest() {
     left = 0;
     right = strlen(chArray) - 1;
     directBinarySearchBound(chArray, c, &left, &right);
-    printf("length: %d. -> %ld, %ld\n", strlen(chArray), left, right);
+    printf("length: %d. -> %ld, %ld\n", (int)strlen(chArray), left, right);
 
     c = 'c';
     left = 0;
     right = strlen(chArray) - 1;
     directBinarySearchBound(chArray, c, &left, &right);
-    printf("length: %d. -> %ld, %ld\n", strlen(chArray), left, right);
+    printf("length: %d. -> %ld, %ld\n", (int)strlen(chArray), left, right);
 }
 
 /**
@@ -526,7 +526,7 @@ void _inverseSAWholeTest() {
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
     long i = 0;
-    long arrayLength = sizeof(SA) / sizeof(int);
+    long arrayLength = strlen(T);
     printf("total array: %s\n", T);
 
     // create suffix array of T
@@ -557,7 +557,7 @@ void _psiArrayBuildWholeTest() {
     char T[] = "acaaccg$";
     long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
     long i = 0;
-    long arrayLength = sizeof(SA) / sizeof(int);
+    long arrayLength = strlen(T);
     printf("total array: %s\n", T);
 
     // create suffix array of T

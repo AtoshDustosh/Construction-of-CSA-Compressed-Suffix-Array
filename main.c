@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_500.txt";   // file path
+char* FILEPATH = "testdata_2.txt";   // file path
 long ARRAYLENGTH = 0; // length of T ~ n
 long PARTLENGTH = 0; // part length of T ~ l
 long PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -28,6 +28,7 @@ long* Psi = NULL; // Psi of T - the compressed suffix array
 void directlyConstruction();
 void testSet();
 void readAndPrint();
+void performanceProblem();
 
 int main() {
     long i = 0;
@@ -52,7 +53,7 @@ int main() {
     SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
     Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
 
-    if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL){
+    if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL) {
         printf("System memory not enough. \n");
         exit(-1);
     }
@@ -71,6 +72,7 @@ int main() {
         mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
         mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, PARTNUM, partIndex, order);
         printf("\n");
+        free(order);
     }
 
     printf("i\tSA[i]\tT_SA[]\tPsi[i]\n");
@@ -79,6 +81,12 @@ int main() {
             printf("%ld\t%ld\t%c\t%ld\n", i, SA[i], T[SA[i]], Psi[i]);
         }
     }
+
+    free(T);
+    free(SA);
+    free(SA_inverse);
+    free(Psi);
+    free(FILEPATH);
 
     return 0;
 }
@@ -114,9 +122,10 @@ void testSet() {
 //    _CSABinaryBoundSearchTest();
 //    _CSABinarySearchOrderValueTest();
 //    _fgpsiFuncTest();
-//
+
 //    readAndPrint();
     directlyConstruction();
+//    performanceProblem();
 
     for(i = 0; i < 10; i++) {
         printf("\n");
@@ -124,6 +133,37 @@ void testSet() {
 }
 
 /////////////////////////////////// Test Functions Below ///////////////////////////////////
+
+/**
+ * Test the performance that a program can do best.
+ */
+void performanceProblem() {
+    long arrayLength = 100;
+
+    long* longArray = NULL;
+    long array1[1045000];
+
+    // maximum long[] length: 489000001(windows 10), 1744000001(deepin)
+
+    while(1) {
+        longArray = (long*)malloc(sizeof(long) * arrayLength);
+        if(longArray == NULL) {
+            printf("Memory not enough. \n");
+            exit(-1);
+        } else {
+            printf(" - got array - length: %ld\n", arrayLength);
+        }
+        long i = 0;
+        for(i = 0; i < arrayLength; i++ ){
+            longArray[i] = i;
+            i = i + arrayLength / 1000;
+        }
+        free(longArray);
+        arrayLength = arrayLength + 1E6;
+    }
+
+    free(array1);
+}
 
 /**
  * Test steps of construction of CSA - directly build.
@@ -138,9 +178,8 @@ void directlyConstruction() {
 
     // build T[] - DNA sequence array
     ARRAYLENGTH++; // get ready to add character '$' to the end of the DNA sequence
-    char* temp = (char*)malloc(sizeof(char) * ARRAYLENGTH);
-    T = temp;
-    loadFnaData(FILEPATH, ARRAYLENGTH, temp);
+    T = (char*)malloc(sizeof(char) * ARRAYLENGTH);
+    loadFnaData(FILEPATH, ARRAYLENGTH, T);
 
     printf("DNA sequence - T[]: \n");
 //    for(i = 0; i < ARRAYLENGTH; i++) {
@@ -149,7 +188,7 @@ void directlyConstruction() {
 //    printf("\n");
 
     // build SA[] - suffix array
-    long* SA = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    SA = (long*)malloc(sizeof(long) * ARRAYLENGTH);
     for(i = 0; i < ARRAYLENGTH; i++) {
         SA[i] = i;
     }
@@ -161,22 +200,20 @@ void directlyConstruction() {
 //    printf("\n");
 
     // build Psi[] - ... Psi array (I don't know how to describe it)
-    long* SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
-    long* Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
     printf("Inverse suffix array - SA_inverse[]\n");
     inverseSAWhole(SA, SA_inverse, ARRAYLENGTH);
     printf("Psi array - Psi[]: \n");
     psiArrayBuildWhole(SA, SA_inverse, Psi, ARRAYLENGTH);
     printf("i\tPsi[]\tT[SA[]]\n");
-    for(i = 0; i < ARRAYLENGTH; i = i + ARRAYLENGTH / 10) {
+    for(i = 0; i < ARRAYLENGTH; i++) {
         printf("%ld\t%ld\t%c\n", i, Psi[i], T[SA[i]]);
+        i = i + ARRAYLENGTH / 10;
     }
     printf("\n");
 
-    free(T);
-    free(SA);
-    free(SA_inverse);
-    free(Psi);
+    printf("direct construction ended. \n");
 }
 
 /**
