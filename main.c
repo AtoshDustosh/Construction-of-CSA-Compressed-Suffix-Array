@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_10000.txt";   // file path
+char* FILEPATH = "testdata_1000.txt";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)

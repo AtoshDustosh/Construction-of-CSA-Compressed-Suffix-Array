@@ -322,14 +322,18 @@ void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength,
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
     int bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
+    /**
+     * \caution strange bug - adding printf can fix the bugs???
+     */
+
     // construction of func Psi
     printf("Calculating func psi ...\n");
     int t = 0;
     for(t = 0; t < arrayLength - bi_i; t++) {
         if(t == gFunc[partLength - 1]) {
-//            if(t == 4746){
-//                printf("i: %d\tj: %d\n", i, j);
-//            }
+            if(t == 4745){
+                printf("i: %d\tj: %d\n", i, j);
+            }
             int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
             if(index1 >= arrayLength - bi_apostrophe) {
                 printf("f func index error. \n");
@@ -338,11 +342,11 @@ void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength,
 
             psiFunc[t] = fFunc[SA[Psi[0 + bi_apostrophe]] - bi_apostrophe];
 
-//            printf("%d\n", t);
+            printf("%d\n", t);
         } else if(t == fFunc[SA[i + bi_apostrophe] - bi_apostrophe]) {
-//            if(t == 4746){
-//                printf("i: %d\tj: %d\n", i, j);
-//            }
+            if(t == 4745){
+                printf("i: %d\tj: %d\n", i, j);
+            }
             int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
             int index2 = SA[Psi[i + bi_apostrophe]] - bi_apostrophe;
             if(index1 >= arrayLength - bi_apostrophe || index2 >= arrayLength - bi_apostrophe) {
@@ -353,11 +357,11 @@ void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength,
             psiFunc[t] = fFunc[SA[Psi[i + bi_apostrophe]] - bi_apostrophe];
             i++;
 
-//            printf("%d\n", t);
+            printf("%d\n", t);
         } else {
-//            if(t == 4746){
-//                printf("i: %d\tj: %d\n", i, j);
-//            }
+            if(t == 4745){
+                printf("i: %d\tj: %d\n", i, j);
+            }
             int index3 = gFunc[j] - bi_i;
             if(index3 >= arrayLength - bi_i || (j + 1) > partLength) {
                 printf("g func index error. \n");
@@ -367,7 +371,7 @@ void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength,
             psiFunc[gFunc[j]] = gFunc[j + 1];
             j++;
 
-//            printf("%d\n", t);
+            printf("%d\n", t);
         }
     }
     psiFunc[0] = gFunc[0];  // this is necessary for fixing the bug
