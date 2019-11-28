@@ -12,15 +12,15 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_300.txt";   // file path
-long ARRAYLENGTH = 0; // length of T ~ n
-long PARTLENGTH = 0; // part length of T ~ l
-long PARTNUM = 0; // number of parts ~ ceil(n/l)
+char* FILEPATH = "testdata_1000.txt";   // file path
+int ARRAYLENGTH = 0; // length of T ~ n
+int PARTLENGTH = 0; // part length of T ~ l
+int PARTNUM = 0; // number of parts ~ ceil(n/l)
 
 char* T = NULL; // DNA sequence of (A,C,G,T) plus a '$'
-long* SA = NULL; // SA of T
-long* SA_inverse = NULL; // inverse of SA
-long* Psi = NULL; // Psi of T - the compressed suffix array
+int* SA = NULL; // SA of T
+int* SA_inverse = NULL; // inverse of SA
+int* Psi = NULL; // Psi of T - the compressed suffix array
 
 /*
  * Functions.
@@ -31,28 +31,28 @@ void readAndPrint();
 void performanceProblem();
 
 int main() {
-    long i = 0;
+    int i = 0;
 
     /**
      * \note strange bug - I once put testSet() before the first func in main() which is fnaDataSize(...)
      *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
      *  this bug may have been fixed, but I'm not sure.
      */
-    testSet();
-    return 0;
+//    testSet();
+//    return 0;
 
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %ld\n", ARRAYLENGTH);
     PARTLENGTH = ARRAYLENGTH / log2(ARRAYLENGTH);   // length of a part (an increment)
-    PARTNUM = (long)ceil((double)ARRAYLENGTH / PARTLENGTH);
+    PARTNUM = (int)ceil((double)ARRAYLENGTH / PARTLENGTH);
     printf("PartLength: %ld, PartNum: %ld\n", PARTLENGTH, PARTNUM);
 
     // cannot apply for memory in a function's stack, because memory applied there will be recycled.
     T = (char*)malloc(sizeof(char) * ARRAYLENGTH);
-    SA = (long*)malloc(sizeof(long) * ARRAYLENGTH);
-    SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
-    Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    SA = (int*)malloc(sizeof(int) * ARRAYLENGTH);
+    SA_inverse = (int*)malloc(sizeof(int) * ARRAYLENGTH);
+    Psi = (int*)malloc(sizeof(int) * ARRAYLENGTH);
 
     if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL) {
         printf("System memory not enough. \n");
@@ -65,8 +65,8 @@ int main() {
     printf("\n");
     for(i = PARTNUM - 1; i > 0; i--) {
         printf("increment part (%ld)\n", i);
-        long partIndex = i; // T_i and T_apostrophe is stored using partIndex
-        long* order = (long*)malloc(sizeof(long) * PARTLENGTH);
+        int partIndex = i; // T_i and T_apostrophe is stored using partIndex
+        int* order = (int*)malloc(sizeof(int) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
         mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, partIndex);
@@ -139,23 +139,23 @@ void testSet() {
  * Test the performance that a program can do best.
  */
 void performanceProblem() {
-    long i = 0;
-    long arrayLength = 100;
+    int i = 0;
+    int arrayLength = 100;
     int integerValue = 0;
 
-    long* longArray = NULL;
+    int* intArray = NULL;
 
-    // maximum long[] length: 489000001(windows 10), 1744000001(deepin)
+    // maximum int[] length: 489000001(windows 10), 1744000001(deepin)
 
     while(1) {
-        longArray = (long*)malloc(sizeof(long) * arrayLength);
-        if(longArray == NULL) {
+        intArray = (int*)malloc(sizeof(int) * arrayLength);
+        if(intArray == NULL) {
             printf("Memory not enough. \n");
             break;
         } else {
             printf(" - got array - length: %ld\n", arrayLength);
         }
-        free(longArray);
+        free(intArray);
         arrayLength = arrayLength + 1E7;
     }
 
@@ -175,10 +175,10 @@ void performanceProblem() {
  * Test steps of construction of CSA - directly build.
  *
  * <note> bug detected - array directly defined cannot be too big.
- * To solve this problem, use (long*)malloc(sizeof(long)*ARRAYLENGTH).
+ * To solve this problem, use (int*)malloc(sizeof(int)*ARRAYLENGTH).
  */
 void directlyConstruction() {
-    long i = 0;
+    int i = 0;
     ARRAYLENGTH = fnaDataSize(FILEPATH);
     printf("data length: %ld\n", ARRAYLENGTH);
 
@@ -194,7 +194,7 @@ void directlyConstruction() {
 //    printf("\n");
 
     // build SA[] - suffix array
-    SA = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    SA = (int*)malloc(sizeof(int) * ARRAYLENGTH);
     for(i = 0; i < ARRAYLENGTH; i++) {
         SA[i] = i;
     }
@@ -206,8 +206,8 @@ void directlyConstruction() {
 //    printf("\n");
 
     // build Psi[] - ... Psi array (I don't know how to describe it)
-    SA_inverse = (long*)malloc(sizeof(long) * ARRAYLENGTH);
-    Psi = (long*)malloc(sizeof(long) * ARRAYLENGTH);
+    SA_inverse = (int*)malloc(sizeof(int) * ARRAYLENGTH);
+    Psi = (int*)malloc(sizeof(int) * ARRAYLENGTH);
     printf("Inverse suffix array - SA_inverse[]\n");
     inverseSAWhole(SA, SA_inverse, ARRAYLENGTH);
     printf("Psi array - Psi[]: \n");

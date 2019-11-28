@@ -15,7 +15,7 @@ void _lowerCaseTest();
 /*
  * Important funcs.
  */
-long myStrLength(char str[]);
+int myStrLength(char str[]);
 char lowerCase(char ch);
 
 
@@ -23,8 +23,8 @@ void _myStrLengthTest() {
     printf("section\\\\ myStringLength test\n");
     char str[] = {'1', '2', '3', '\0'};
     char *ch = &str[0];
-    long strlength = 0;
-    long i = 0;
+    int strlength = 0;
+    int i = 0;
     for(i = 0; i < 3; i++) {
         printf("%c ", str[i]);
     }
@@ -48,9 +48,9 @@ void _lowerCaseTest() {
  *
  * @param str input string
  */
-long myStrLength(char str[]) {
+int myStrLength(char str[]) {
     char *ch = &str[0];
-    long strlength = 0;
+    int strlength = 0;
 
     while(*ch != '\0') {
         strlength++;

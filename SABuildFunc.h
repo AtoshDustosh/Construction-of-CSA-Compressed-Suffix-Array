@@ -24,15 +24,15 @@ void _CSABinarySearchOrderValueTest();    // this test is unnecessary ... perhap
  * Important functions.
  */
 
-void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevOrderValue,
-                               long* max_b);
-void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right);
-void directBinarySearchBound(char* chArray, char c, long* left, long* right);
-void psiArrayBuildWhole(long SA[], long SA_inverse[], long Psi[], long length);
-void inverseSAWhole(long SA[], long SA_inverse[], long length);
-void quickSort(char *str[], long left, long right);
-void suffixArrayQuickSort(long SA[], char T[], long left, long right);
-int compareSuffix(long i, long j, char T[]);
+void CSABinarySearchOrderValue(int* SA, int* Psi, int lc, int rc, int prevOrderValue,
+                               int* max_b);
+void CSABinaryBoundSearch(char* T, int* SA, char c, int* left, int* right);
+void directBinarySearchBound(char* chArray, char c, int* left, int* right);
+void psiArrayBuildWhole(int SA[], int SA_inverse[], int Psi[], int length);
+void inverseSAWhole(int SA[], int SA_inverse[], int length);
+void quickSort(char *str[], int left, int right);
+void suffixArrayQuickSort(int SA[], char T[], int left, int right);
+int compareSuffix(int i, int j, char T[]);
 
 
 /**
@@ -42,12 +42,12 @@ int compareSuffix(long i, long j, char T[]);
  * @param left start position (index-start)
  * @param right end position (index-end)
  */
-void quickSort(char *str[], long left, long right) {
+void quickSort(char *str[], int left, int right) {
     if(left >= right) {
         return;
     }
-    long i = left;
-    long j = right;
+    int i = left;
+    int j = right;
     char *key = str[left];
 //  printf("key: %s ****", key);
 //    int index = 0;
@@ -88,13 +88,13 @@ void quickSort(char *str[], long left, long right) {
  * @param left left bounder index
  * @param right right bounder index
  */
-void suffixArrayQuickSort(long SA[], char T[], long left, long right) {
+void suffixArrayQuickSort(int SA[], char T[], int left, int right) {
     if(left >= right) {
         return;
     }
-    long i = left;
-    long j = right;
-    long key = SA[left]; // the key-suffix starts at SA[left]
+    int i = left;
+    int j = right;
+    int key = SA[left]; // the key-suffix starts at SA[left]
 
     while(i < j) {
         // find the suffix that is smaller than key-suffix in right part
@@ -127,7 +127,7 @@ void suffixArrayQuickSort(long SA[], char T[], long left, long right) {
  * @return 1 when suffix[i] > suffix[j]; -1 when suffix[i] < suffix[j];
  *      0 when suffix[i] equals suffix[j]
  */
-int compareSuffix(long i, long j, char T[]) {
+int compareSuffix(int i, int j, char T[]) {
 //    printf("comparing suffix(%d, %c, %d) and suffix(%d, %c, %d)\n", i, T[i], T[i], j, T[j], T[j]);
     while(1) {
         if((T[i] == '$' && T[j] == '$') || (T[i] == '\0' && T[j] == '\0')) {
@@ -160,8 +160,8 @@ int compareSuffix(long i, long j, char T[]) {
  * @param Psi[] psi function array
  * @param length length of these arrays (all the same)
  */
-void psiArrayBuildWhole(long SA[], long SA_inverse[], long Psi[], long length) {
-    long i = 0;
+void psiArrayBuildWhole(int SA[], int SA_inverse[], int Psi[], int length) {
+    int i = 0;
     Psi[0] = SA_inverse[0];
     for(i = 1; i < length; i++) {
         Psi[i] = SA_inverse[SA[i] + 1];
@@ -175,8 +175,8 @@ void psiArrayBuildWhole(long SA[], long SA_inverse[], long Psi[], long length) {
  * @param SA_inverse[] inverse of suffix array (to be created)
  * @param length length of suffix array
  */
-void inverseSAWhole(long SA[], long SA_inverse[], long length) {
-    long i = 0;
+void inverseSAWhole(int SA[], int SA_inverse[], int length) {
+    int i = 0;
     for(i = 0; i < length; i++) {
         SA_inverse[SA[i]] = i;
     }
@@ -191,17 +191,17 @@ void inverseSAWhole(long SA[], long SA_inverse[], long length) {
  * @param / @return left left bound
  * @param / @return right right bound
  */
-void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
-    long leftBorder = *left;
-    long rightBorder = *right;
-    long lc = *left;
-    long rc = *right;
+void directBinarySearchBound(char* chArray, char c, int* left, int* right) {
+    int leftBorder = *left;
+    int rightBorder = *right;
+    int lc = *left;
+    int rc = *right;
 
     // find the left bound
     leftBorder = *left;
     rightBorder = *right;
     while(leftBorder < rightBorder) {
-        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        int mid = leftBorder + (rightBorder - leftBorder) / 2;
         char midCh = chArray[mid];
         if(mid == leftBorder) {
             if(chArray[leftBorder] == c) {
@@ -221,7 +221,7 @@ void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
     leftBorder = *left;
     rightBorder = *right;
     while(leftBorder < rightBorder) {
-        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        int mid = leftBorder + (rightBorder - leftBorder) / 2;
         char midCh = chArray[mid];
         if(mid == leftBorder) {
             if(chArray[rightBorder] == c) {
@@ -253,17 +253,17 @@ void directBinarySearchBound(char* chArray, char c, long* left, long* right) {
  * @param / @return left left bound
  * @param / @return right right bound
  */
-void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
-    long leftBorder = *left;
-    long rightBorder = *right;
-    long lc = *left;
-    long rc = *right;
+void CSABinaryBoundSearch(char* T, int* SA, char c, int* left, int* right) {
+    int leftBorder = *left;
+    int rightBorder = *right;
+    int lc = *left;
+    int rc = *right;
 
     // find the left bound
     leftBorder = *left;
     rightBorder = *right;
     while(leftBorder < rightBorder) {
-        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        int mid = leftBorder + (rightBorder - leftBorder) / 2;
         char midCh = T[SA[mid]];
         if(mid == leftBorder) {
             if(T[SA[leftBorder]] == c) {
@@ -286,7 +286,7 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
     leftBorder = *left;
     rightBorder = *right;
     while(leftBorder < rightBorder) {
-        long mid = leftBorder + (rightBorder - leftBorder) / 2;
+        int mid = leftBorder + (rightBorder - leftBorder) / 2;
         char midCh = T[SA[mid]];
         if(mid == leftBorder) {
             if(T[SA[rightBorder]] <= c) {
@@ -318,13 +318,13 @@ void CSABinaryBoundSearch(char* T, long* SA, char c, long* left, long* right) {
  * @param prevOrderValue value of previous order func, which actually is order(X, T')
  * @param / @return max_b a pointer to maximum b; returns -1 if there is no such b
  */
-void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevOrderValue,
-                               long* max_b) {
+void CSABinarySearchOrderValue(int* SA, int* Psi, int lc, int rc, int prevOrderValue,
+                               int* max_b) {
 //    printf("\n");
 //     find the right bound
     while(lc <= rc) {
-        long mid = lc + (rc - lc) / 2;
-        long midValue = Psi[mid];
+        int mid = lc + (rc - lc) / 2;
+        int midValue = Psi[mid];
 //        printf("midValue(%ld), lcValue(%ld), rcValue(%ld)\n", midValue, Psi[lc], Psi[rc]);
         if(mid == lc) {
             // process the last cases
@@ -358,21 +358,21 @@ void CSABinarySearchOrderValue(long* SA, long* Psi, long lc, long rc, long prevO
  */
 void _CSABinarySearchOrderValueTest() {
     printf("\n ******* _CSABinarySearchOrderValueTest *********\n");
-    long i = 0;
+    int i = 0;
     char* T_apostrophe = "cagac$";
     char* T_i = "gca";
-    long SA_apostrophe[6] = {5, 3, 1, 4, 0, 2};
-    long Psi_apostrophe[6] = {4, 3, 5, 0, 2, 1};
-    long iLength = strlen(T_i);
-    long apostropheLength = strlen(T_apostrophe);
-    long* order = (long*)malloc(sizeof(long) * iLength);
+    int SA_apostrophe[6] = {5, 3, 1, 4, 0, 2};
+    int Psi_apostrophe[6] = {4, 3, 5, 0, 2, 1};
+    int iLength = strlen(T_i);
+    int apostropheLength = strlen(T_apostrophe);
+    int* order = (int*)malloc(sizeof(int) * iLength);
 
-    long prevOrderValue = 4;
+    int prevOrderValue = 4;
     for(i = iLength - 1; i >= 0; i--) {
         char c = T_i[i];  // the character in the formula
-        long lc = 0;
-        long rc = apostropheLength - 1;
-        long orderValue = 0;
+        int lc = 0;
+        int rc = apostropheLength - 1;
+        int orderValue = 0;
         CSABinaryBoundSearch(T_apostrophe, SA_apostrophe, c, &lc, &rc);
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
         // implement of condition ¡Á[b] -> ¡Á[SA[b]], lc <= b <= rc
@@ -382,7 +382,7 @@ void _CSABinarySearchOrderValueTest() {
             orderValue = lc - 1;   // this is modified ... on my own will
         } else {
             // find the max b that satisfies condition that for any order(cX, T'), Psi_T'[b] <= order(X, T')
-            long max_b = 0;
+            int max_b = 0;
             CSABinarySearchOrderValue(SA_apostrophe, Psi_apostrophe, lc, rc, prevOrderValue, &max_b);
             if(max_b == -1) {
                 orderValue = lc - 1;
@@ -406,11 +406,11 @@ void _CSABinarySearchOrderValueTest() {
 void _CSABinaryBoundSearchTest() {
     printf("\n ******* _CSABinaryBoundSearchTest *********\n");
     char* T = "ttaaccttaaata$";
-    long SA[] = {13, 12, 8, 2, 9, 3, 10, 4, 5, 11, 7, 1, 6, 0};
+    int SA[] = {13, 12, 8, 2, 9, 3, 10, 4, 5, 11, 7, 1, 6, 0};
     char c = 'g';
-    long left = 0;
-    long right = strlen(T) - 1;
-    long i = 0;
+    int left = 0;
+    int right = strlen(T) - 1;
+    int i = 0;
     for(i = 0; i < strlen(T); i++) {
         printf("%c", T[SA[i]]);
     }
@@ -438,9 +438,9 @@ void _binarySearchBoundTest() {
     printf("\n ******* _binarySearchBoundTest *********\n");
     char* chArray = "$aaagggggggttttt";
     char c = 'c';
-    long left = 0;
-    long right = strlen(chArray) - 1;
-    long i = 0;
+    int left = 0;
+    int right = strlen(chArray) - 1;
+    int i = 0;
 
     for(i = 0; i < strlen(chArray); i++) {
         printf("%c", chArray[i]);
@@ -468,11 +468,11 @@ void _quickSortTest() {
     char *str[] = {"abb", "aab", "aaa", "bbdsas",
                    "bsass", "brabrabra", "blahblah", "atosh"
                   };
-    long strLength = 8;
+    int strLength = 8;
 
     quickSort(str, 0, strLength - 1);
 
-    long i = 0;
+    int i = 0;
     printf("sorted strings' array: ");
     for(i = 0; i < strLength; i++) {
         printf(" %s", str[i]);
@@ -485,10 +485,10 @@ void _quickSortTest() {
  */
 void _suffixArrayQuickSortTest() {
     printf("\n ******* _suffixArrayQuickSortTest *********\n");
-    long i = 0;
+    int i = 0;
     char T[] = "acaaccg$";
-    long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
-    long sortLength = strlen(T);
+    int SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
+    int sortLength = strlen(T);
     printf("total array: %s\n", T);
 
     suffixArrayQuickSort(SA, T, 0, sortLength - 1);
@@ -524,9 +524,9 @@ void _compareSuffixTest() {
 void _inverseSAWholeTest() {
     printf("\n ******* _inverseSAWholeTest *********\n");
     char T[] = "acaaccg$";
-    long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
-    long i = 0;
-    long arrayLength = strlen(T);
+    int SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
+    int i = 0;
+    int arrayLength = strlen(T);
     printf("total array: %s\n", T);
 
     // create suffix array of T
@@ -538,7 +538,7 @@ void _inverseSAWholeTest() {
     printf("\n");
 
     // get inversed suffix array (x->y => y->x)
-    long SA_inverse[arrayLength];
+    int SA_inverse[arrayLength];
     inverseSAWhole(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
@@ -555,9 +555,9 @@ void _inverseSAWholeTest() {
 void _psiArrayBuildWholeTest() {
     printf("\n ******* _psiArrayBuildWholeTest *********\n");
     char T[] = "acaaccg$";
-    long SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
-    long i = 0;
-    long arrayLength = strlen(T);
+    int SA[] = {0, 1, 2, 3, 4, 5, 6, 7};
+    int i = 0;
+    int arrayLength = strlen(T);
     printf("total array: %s\n", T);
 
     // create suffix array of T
@@ -569,7 +569,7 @@ void _psiArrayBuildWholeTest() {
     printf("\n");
 
     // get inversed suffix array (x->y => y->x)
-    long SA_inverse[arrayLength];
+    int SA_inverse[arrayLength];
     inverseSAWhole(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
@@ -578,7 +578,7 @@ void _psiArrayBuildWholeTest() {
     printf("\n");
 
     // build Psi array based on SA[] and SA_inverse[]
-    long Psi[arrayLength];
+    int Psi[arrayLength];
     psiArrayBuildWhole(SA, SA_inverse, Psi, arrayLength);
     printf("Psi array: ");
     for(i = 0; i < arrayLength; i++) {

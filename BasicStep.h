@@ -9,20 +9,18 @@
 #include "FileOperation.h"
 #include "HelperFunction.h"
 
-void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
-              long arrayLength, long partLength, long partNum);
+void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
+              int arrayLength, int partLength, int partNum);
 
-
-
-void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
-              long arrayLength, long partLength, long partNum) {
-    long bi = (partNum - 1) * partLength;
-    long localLength = arrayLength - bi;
-    long i = 0;
+void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
+              int arrayLength, int partLength, int partNum) {
+    int bi = (partNum - 1) * partLength;
+    int localLength = arrayLength - bi;
+    int i = 0;
     char* localT = NULL;
-    long* localSA = NULL;
-    long* localSA_inverse = NULL;
-    long* localPsi = NULL;
+    int* localSA = NULL;
+    int* localSA_inverse = NULL;
+    int* localPsi = NULL;
 
     // load the DNA sequence
     loadFnaData(filePath, arrayLength, T);
@@ -32,9 +30,9 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
 //    }
 
     localT = (char*)malloc(sizeof(char) * localLength);
-    localSA = (long*)malloc(sizeof(long) * localLength);
-    localSA_inverse = (long*)malloc(sizeof(long) * localLength);
-    localPsi = (long*)malloc(sizeof(long) * localLength);
+    localSA = (int*)malloc(sizeof(int) * localLength);
+    localSA_inverse = (int*)malloc(sizeof(int) * localLength);
+    localPsi = (int*)malloc(sizeof(int) * localLength);
 
     printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
     for(i = bi; i < arrayLength; i++) {
@@ -53,7 +51,7 @@ void baseStep(char* filePath, char* T, long* SA, long* SA_inverse, long* Psi,
 
     // copy the results to the original arrays
     for(i = bi; i < arrayLength; i++) {
-        long locali = i - bi;
+        int locali = i - bi;
         SA[i] = localSA[locali] + bi;
         SA_inverse[i] = localSA_inverse[locali] + bi;
         Psi[i] = localPsi[locali] + bi;

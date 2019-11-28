@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-long fnaDataSize(char* filePath);
-long loadFnaData(char* filePath, long dataLength, char* T);
+int fnaDataSize(char* filePath);
+int loadFnaData(char* filePath, int dataLength, char* T);
 
 
 /**
@@ -19,11 +19,11 @@ long loadFnaData(char* filePath, long dataLength, char* T);
  * @param arrayLength length of the DNA sequence plus a '$'
  * @param T[] array used for storing data (ending with '$')
  */
-long loadFnaData(char* filePath, long arrayLength, char* T) {
+int loadFnaData(char* filePath, int arrayLength, char* T) {
     printf("Loading data ... \n");
     FILE* fp = fopen(filePath, "r");
     int ifData = 0;
-    long fnaDataPointer = 0;
+    int fnaDataPointer = 0;
 
     if(fp != NULL && fnaDataPointer < arrayLength) {
         char ch = fgetc(fp);
@@ -54,11 +54,11 @@ long loadFnaData(char* filePath, long arrayLength, char* T) {
  *
  * @param filePath file path
  */
-long fnaDataSize(char* filePath) {
+int fnaDataSize(char* filePath) {
     printf("Calculating size of the fna data file ... \n");
     FILE* fp = fopen(filePath, "r");
     int ifData = 0;   // if the file pointer is now in the data part
-    long dataLength = 0;
+    int dataLength = 0;
 
     if(fp != NULL) {
         char ch = fgetc(fp);
