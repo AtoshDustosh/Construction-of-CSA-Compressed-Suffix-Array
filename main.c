@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_1000.txt";   // file path
+char* FILEPATH = "testdata_10000.txt";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -43,10 +43,10 @@ int main() {
 
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
-    printf("DNA (plus a \'$\') sequence length: %ld\n", ARRAYLENGTH);
+    printf("DNA (plus a \'$\') sequence length: %d\n", ARRAYLENGTH);
     PARTLENGTH = ARRAYLENGTH / log2(ARRAYLENGTH);   // length of a part (an increment)
     PARTNUM = (int)ceil((double)ARRAYLENGTH / PARTLENGTH);
-    printf("PartLength: %ld, PartNum: %ld\n", PARTLENGTH, PARTNUM);
+    printf("PartLength: %d, PartNum: %d\n", PARTLENGTH, PARTNUM);
 
     // cannot apply for memory in a function's stack, because memory applied there will be recycled.
     T = (char*)malloc(sizeof(char) * ARRAYLENGTH);
@@ -64,7 +64,7 @@ int main() {
 
     printf("\n");
     for(i = PARTNUM - 1; i > 0; i--) {
-        printf("increment part (%ld)\n", i);
+        printf("increment part (%d)\n", i);
         int partIndex = i; // T_i and T_apostrophe is stored using partIndex
         int* order = (int*)malloc(sizeof(int) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
@@ -79,7 +79,7 @@ int main() {
     printf("i\tSA[i]\tT_SA[]\tPsi[i]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
         if(i % PARTLENGTH == 0) {
-            printf("%ld\t%ld\t%c\t%ld\n", i, SA[i], T[SA[i]], Psi[i]);
+            printf("%d\t%d\t%c\t%d\n", i, SA[i], T[SA[i]], Psi[i]);
         }
     }
 
@@ -139,7 +139,6 @@ void testSet() {
  * Test the performance that a program can do best.
  */
 void performanceProblem() {
-    int i = 0;
     int arrayLength = 100;
     int integerValue = 0;
 
@@ -153,7 +152,7 @@ void performanceProblem() {
             printf("Memory not enough. \n");
             break;
         } else {
-            printf(" - got array - length: %ld\n", arrayLength);
+            printf(" - got array - length: %d\n", arrayLength);
         }
         free(intArray);
         arrayLength = arrayLength + 1E7;
@@ -180,7 +179,7 @@ void performanceProblem() {
 void directlyConstruction() {
     int i = 0;
     ARRAYLENGTH = fnaDataSize(FILEPATH);
-    printf("data length: %ld\n", ARRAYLENGTH);
+    printf("data length: %d\n", ARRAYLENGTH);
 
     // build T[] - DNA sequence array
     ARRAYLENGTH++; // get ready to add character '$' to the end of the DNA sequence
@@ -201,7 +200,7 @@ void directlyConstruction() {
     suffixArrayQuickSort(SA, T, 0, ARRAYLENGTH - 1);
     printf("Suffix array - SA[]: \n");
 //    for(i = 0; i < ARRAYLENGTH; i++) {
-//        printf("%ld\t%ld\t%c\n", i, SA[i], T[SA[i]]);
+//        printf("%d\t%d\t%c\n", i, SA[i], T[SA[i]]);
 //    }
 //    printf("\n");
 
@@ -214,7 +213,7 @@ void directlyConstruction() {
     psiArrayBuildWhole(SA, SA_inverse, Psi, ARRAYLENGTH);
     printf("i\tPsi[]\tT[SA[]]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
-        printf("%ld\t%ld\t%c\n", i, Psi[i], T[SA[i]]);
+        printf("%d\t%d\t%c\n", i, Psi[i], T[SA[i]]);
         i = i + ARRAYLENGTH / 10;
     }
     printf("\n");
@@ -259,7 +258,7 @@ void readAndPrint() {
     } else {
         printf("failed to open file %s", FILEPATH);
     }
-    printf("dataLength: %ld\n", ARRAYLENGTH);
+    printf("dataLength: %d\n", ARRAYLENGTH);
     free(fp);
 }
 

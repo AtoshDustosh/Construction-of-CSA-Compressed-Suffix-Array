@@ -34,17 +34,20 @@ void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
     localSA_inverse = (int*)malloc(sizeof(int) * localLength);
     localPsi = (int*)malloc(sizeof(int) * localLength);
 
-    printf("\n\nBeginning at index %ld, the last part T_(n/l) is:\n", bi);
+    printf("\n\nBeginning at index %d, the last part T_(n/l) is:\n", bi);
     for(i = bi; i < arrayLength; i++) {
         printf("%c", T[i]);
         localT[i - bi] = T[i];
         localSA[i - bi] = i - bi;
     }
-    printf("\n\n");
+    printf("\n");
+    printf("Length of the last part: %d\n", localLength);
+    printf("\n");
+
 
     suffixArrayQuickSort(localSA, localT, 0, localLength - 1);
 //    for(i = 0; i < localLength; i++){
-//        printf("%c\t%ld\n", localT[i], localSA[i]);
+//        printf("%c\t%d\n", localT[i], localSA[i]);
 //    }
     inverseSAWhole(localSA, localSA_inverse, localLength);
     psiArrayBuildWhole(localSA, localSA_inverse, localPsi, localLength);
@@ -60,12 +63,12 @@ void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
     // print the sorted first increment
 //    printf("index\tch\tSA\tch_SA\tSA_inv\tPsi\n");
 //    for(i = bi; i < arrayLength; i++) {  // complicated version
-//        printf("%ld\t", i - bi);
+//        printf("%d\t", i - bi);
 //        printf("%c\t", T[i]);
-//        printf("%ld\t", SA[i] - bi);
+//        printf("%d\t", SA[i] - bi);
 //        printf("%c\t", T[SA[i]]);
-//        printf("%ld\t", SA_inverse[i] - bi);
-//        printf("%ld\t", Psi[i] - bi);
+//        printf("%d\t", SA_inverse[i] - bi);
+//        printf("%d\t", Psi[i] - bi);
 //        printf("\n");
 //    }
 

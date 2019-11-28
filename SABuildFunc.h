@@ -325,7 +325,7 @@ void CSABinarySearchOrderValue(int* SA, int* Psi, int lc, int rc, int prevOrderV
     while(lc <= rc) {
         int mid = lc + (rc - lc) / 2;
         int midValue = Psi[mid];
-//        printf("midValue(%ld), lcValue(%ld), rcValue(%ld)\n", midValue, Psi[lc], Psi[rc]);
+//        printf("midValue(%d), lcValue(%d), rcValue(%d)\n", midValue, Psi[lc], Psi[rc]);
         if(mid == lc) {
             // process the last cases
             if(midValue <= prevOrderValue) {
@@ -376,7 +376,7 @@ void _CSABinarySearchOrderValueTest() {
         CSABinaryBoundSearch(T_apostrophe, SA_apostrophe, c, &lc, &rc);
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
         // implement of condition ¡Á[b] -> ¡Á[SA[b]], lc <= b <= rc
-        printf("(%c) -> lc: %ld, rc: %ld\t", c, lc, rc);
+        printf("(%c) -> lc: %d, rc: %d\t", c, lc, rc);
 
         if(lc > rc) {
             orderValue = lc - 1;   // this is modified ... on my own will
@@ -391,7 +391,7 @@ void _CSABinarySearchOrderValueTest() {
             }
         }
 
-        printf("prevOrderValue: %ld\torderValue(%ld): %ld\t", prevOrderValue, i, orderValue);
+        printf("prevOrderValue: %d\torderValue(%d): %d\t", prevOrderValue, i, orderValue);
 
         order[i] = orderValue;
         prevOrderValue = orderValue;
@@ -422,13 +422,13 @@ void _CSABinaryBoundSearchTest() {
     left = 0;
     right = strlen(T) - 1;
     CSABinaryBoundSearch(T, SA, c, &left, &right);
-    printf("%c -> %ld, %ld\n", c, left, right);
+    printf("%c -> %d, %d\n", c, left, right);
 
     c = 'c';
     left = 0;
     right = strlen(T) - 1;
     CSABinaryBoundSearch(T, SA, c, &left, &right);
-    printf("%c -> %ld, %ld\n", c, left, right);
+    printf("%c -> %d, %d\n", c, left, right);
 }
 
 /**
@@ -451,13 +451,13 @@ void _binarySearchBoundTest() {
     left = 0;
     right = strlen(chArray) - 1;
     directBinarySearchBound(chArray, c, &left, &right);
-    printf("length: %d. -> %ld, %ld\n", (int)strlen(chArray), left, right);
+    printf("length: %d. -> %d, %d\n", (int)strlen(chArray), left, right);
 
     c = 'c';
     left = 0;
     right = strlen(chArray) - 1;
     directBinarySearchBound(chArray, c, &left, &right);
-    printf("length: %d. -> %ld, %ld\n", (int)strlen(chArray), left, right);
+    printf("length: %d. -> %d, %d\n", (int)strlen(chArray), left, right);
 }
 
 /**
@@ -495,7 +495,7 @@ void _suffixArrayQuickSortTest() {
 
     printf("sorted suffix array\n");
     for( i = 0; i < sortLength; i++) {
-        printf("%ld\t%c\n", SA[i], T[SA[i]]);
+        printf("%d\t%c\n", SA[i], T[SA[i]]);
     }
     printf("\n");
 }
@@ -533,7 +533,7 @@ void _inverseSAWholeTest() {
     suffixArrayQuickSort(SA, T, 0, arrayLength - 1);
     printf("sorted suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%ld ", SA[i]);
+        printf("%d ", SA[i]);
     }
     printf("\n");
 
@@ -542,7 +542,7 @@ void _inverseSAWholeTest() {
     inverseSAWhole(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%ld ", SA_inverse[i]);
+        printf("%d ", SA_inverse[i]);
     }
     printf("\n");
 
@@ -564,7 +564,7 @@ void _psiArrayBuildWholeTest() {
     suffixArrayQuickSort(SA, T, 0, arrayLength - 1);
     printf("sorted suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%ld ", SA[i]);
+        printf("%d ", SA[i]);
     }
     printf("\n");
 
@@ -573,7 +573,7 @@ void _psiArrayBuildWholeTest() {
     inverseSAWhole(SA, SA_inverse, arrayLength);
     printf("inversed suffix array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%ld ", SA_inverse[i]);
+        printf("%d ", SA_inverse[i]);
     }
     printf("\n");
 
@@ -582,7 +582,7 @@ void _psiArrayBuildWholeTest() {
     psiArrayBuildWhole(SA, SA_inverse, Psi, arrayLength);
     printf("Psi array: ");
     for(i = 0; i < arrayLength; i++) {
-        printf("%ld ", Psi[i]);
+        printf("%d ", Psi[i]);
     }
     printf("\n");
 
