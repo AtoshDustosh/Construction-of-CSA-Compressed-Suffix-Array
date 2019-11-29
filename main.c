@@ -75,17 +75,19 @@ int main() {
         startTime = clock();
         mergeStepA(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, partIndex);
         endTime = clock();
-//        printf("merge step (a) takes time: %ld\n", endTime - startTime);
+        printf("merge step (a) takes time: %ld\n", endTime - startTime);
+
         startTime = clock();
         mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
         endTime = clock();
-//        printf("merge step (b) takes time: %ld\n", endTime - startTime);
+        printf("merge step (b) takes time: %ld\n", endTime - startTime);
+
         startTime = clock();
         mergeStepC(T, SA, SA_inverse, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
         endTime = clock();
-//        printf("merge step (c) takes time: %ld\n", endTime - startTime);
+        printf("merge step (c) takes time: %ld\n", endTime - startTime);
 
-//        printf("\n");
+        printf("\n");
         free(order);
     }
 
@@ -140,7 +142,7 @@ void testSet() {
 //    _fgpsiFuncTest();
 
 //    readAndPrint();
-//    directlyConstruction();
+    directlyConstruction();
 //    performanceProblem();
 
     for(i = 0; i < 10; i++) {
