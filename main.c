@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "SimpleTest.h"
 #include "HelperFunction.h"
 #include "SABuildFunc.h"
@@ -12,7 +13,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_1000.txt";   // file path
+char* FILEPATH = "NC_008253.fna";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -32,6 +33,8 @@ void performanceProblem();
 
 int main() {
     int i = 0;
+    long startTime = 0;
+    long endTime = 0;
 
     /**
      * \note strange bug - I once put testSet() before the first func in main() which is fnaDataSize(...)
@@ -69,18 +72,29 @@ int main() {
         int* order = (int*)malloc(sizeof(int) * PARTLENGTH);
         // sorted suffixes are stored in SA[startIndex_i]...[startIndex_apostrophe]
 
-        mergeStepA(T, SA, ARRAYLENGTH, PARTLENGTH, partIndex);
+        startTime = clock();
+        mergeStepA(T, SA, SA_inverse, ARRAYLENGTH, PARTLENGTH, partIndex);
+        endTime = clock();
+//        printf("merge step (a) takes time: %ld\n", endTime - startTime);
+        startTime = clock();
         mergeStepB(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
-        mergeStepC(T, SA, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
-        printf("\n");
+        endTime = clock();
+//        printf("merge step (b) takes time: %ld\n", endTime - startTime);
+        startTime = clock();
+        mergeStepC(T, SA, SA_inverse, Psi, ARRAYLENGTH, PARTLENGTH, partIndex, order);
+        endTime = clock();
+//        printf("merge step (c) takes time: %ld\n", endTime - startTime);
+
+//        printf("\n");
         free(order);
     }
 
     printf("i\tSA[i]\tT_SA[]\tPsi[i]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
-        if(i % PARTLENGTH == 0) {
-            printf("%d\t%d\t%c\t%d\n", i, SA[i], T[SA[i]], Psi[i]);
+        if(i % PARTLENGTH != 0) {
+            continue;
         }
+        printf("%d\t%d\t%c\t%d\n", i, SA[i], T[SA[i]], Psi[i]);
     }
 
     free(T);
@@ -109,6 +123,7 @@ void testSet() {
     int i = 0;
 
 //    _CLanguageReview();
+//    _timeOperationTest();
 //    _mathematicalFuncsTest();
 //    _mathematicalFuncsTest();
 //    _mathematicalFuncsTest();
@@ -126,7 +141,7 @@ void testSet() {
 
 //    readAndPrint();
 //    directlyConstruction();
-    performanceProblem();
+//    performanceProblem();
 
     for(i = 0; i < 10; i++) {
         printf("\n");
@@ -160,9 +175,9 @@ void performanceProblem() {
 
     integerValue = 0;
     arrayLength = integerValue;
-    while(1){
+    while(1) {
         printf("%d\n", integerValue += 1000000);
-        if(integerValue < arrayLength){
+        if(integerValue < arrayLength) {
             break;
         }
         arrayLength = integerValue;
@@ -177,7 +192,11 @@ void performanceProblem() {
  * To solve this problem, use (int*)malloc(sizeof(int)*ARRAYLENGTH).
  */
 void directlyConstruction() {
+    long startTime = 0;
+    long endTime = 0;
     int i = 0;
+
+    startTime = clock();
     ARRAYLENGTH = fnaDataSize(FILEPATH);
     printf("data length: %d\n", ARRAYLENGTH);
 
@@ -211,6 +230,11 @@ void directlyConstruction() {
     inverseSAWhole(SA, SA_inverse, ARRAYLENGTH);
     printf("Psi array - Psi[]: \n");
     psiArrayBuildWhole(SA, SA_inverse, Psi, ARRAYLENGTH);
+    endTime = clock();
+
+    printf("Direct construction takes time: %ld\n", endTime - startTime);
+
+
     printf("i\tPsi[]\tT[SA[]]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
         printf("%d\t%d\t%c\n", i, Psi[i], T[SA[i]]);

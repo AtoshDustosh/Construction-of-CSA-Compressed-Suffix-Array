@@ -5,18 +5,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include "SABuildFunc.h"
 #include "HelperFunction.h"
 
-void mergeStepA(char* T, int* SA, int arrayLength, int partLength, int partIndex);
+void mergeStepA(char* T, int* SA, int* SA_inverse, int arrayLength, int partLength, int partIndex);
 void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
                 int partIndex, int* order);
-void mergeStepC(char* T, int* SA, int* Psi, int arrayLength, int partLength,
+void mergeStepC(char* T, int* SA, int* SA_inverse, int* Psi, int arrayLength, int partLength,
                 int partIndex, int* order);
 void processFuncF(char* T, int* SA, int* order, int arrayLength, int partLength, int partIndex,
                   int* fFunc);
-void processFuncG(char* T, int* SA, int* order, int arrayLength, int partLength, int partIndex,
-                  int* gFunc);
+void processFuncG(char* T, int* SA, int* SA_inverse, int* order, int arrayLength, int partLength,
+                  int partIndex, int* gFunc);
 void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength, int partIndex,
                     int* psiFunc, int* fFunc, int* gFunc);
 void _fgpsiFuncTest();
@@ -27,19 +28,21 @@ void _fgpsiFuncTest();
  *
  * @param T DNA sequence (plus a '$')
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
+ * @param SA_inverse inverse of SA
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
  * @param partIndex index of this part
  */
-void mergeStepA(char* T, int* SA, int arrayLength, int partLength, int partIndex) {
+void mergeStepA(char* T, int* SA, int* SA_inverse, int arrayLength, int partLength, int partIndex) {
     printf("Merge Step (a)\n");
     int i = 0;
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
     int bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
     /**
-     *  \note this operation of localization results in the strange bug
-     *     of order(cX, T') calculating.
+     *  \note this operation of localization resulted in the strange bug
+     *     of order(cX, T') calculating -- ignored all characters after
+     *     T[bi_apostrophe - 1] when comparing suffixes
      */
     char* T_i = (char*)malloc(sizeof(char) * (arrayLength - bi_i));
     int* localSA = (int*)malloc(sizeof(int) * (arrayLength - bi_i));
@@ -65,6 +68,7 @@ void mergeStepA(char* T, int* SA, int arrayLength, int partLength, int partIndex
     for(i = bi_i; i < bi_apostrophe; i++) {
         int locali = i - bi_i;
         SA[i] = localSA[locali] + bi_i;
+        SA_inverse[SA[i]] = i;
 
 //        printf("%d\t", i - bi_i);
 //        printf("%c\t", T[i]);
@@ -97,6 +101,8 @@ void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
                 int partIndex, int* order) {
     printf("Merge Step (b)\n");
     int i = 0;
+//    long startTime = 0;
+//    long endTime = 0;
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
     int bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
@@ -108,11 +114,15 @@ void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
         int lc = bi_apostrophe;
         int rc = arrayLength - 1;
         int orderValue = 0;    // "local" index value
+//        startTime = clock();
         CSABinaryBoundSearch(T, SA, c, &lc, &rc);
+//        endTime = clock();
         // T[SA[lc]] ~ T[SA[rc]] represents the field of c
         // implement of condition ×[b] -> ×[SA[b]], lc <= b <= rc
 //        printf("(%c) -> lc: %d, rc: %d\t", c, lc - bi_apostrophe, rc - bi_apostrophe);
+//        printf("%d -> locate lc and rc time: %ld\t", (bi_apostrophe - 1 - i), endTime - startTime);
 
+//        startTime = clock();
         if(lc > rc) {
             orderValue = lc - 1 - bi_apostrophe;
         } else {
@@ -126,6 +136,8 @@ void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
                 orderValue = max_b - bi_apostrophe;
             }
         }
+//        endTime = clock();
+//        printf("locate order value time: %ld\t", endTime - startTime);
 
 //        printf("prevOrderValue: %d\torderValue(%d): %d\t", prevOrderValue - bi_apostrophe, i - bi_i,
 //               orderValue);
@@ -159,7 +171,7 @@ void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
 //        printf("suf[%d](%d) ~ %c...\torder(suf[%d], T\'): %d\n", i, SA[i + bi_i] - bi_i,
 //               T[SA[i + bi_i]], i, order[SA[i + bi_i] - bi_i]);
 //    }
-//
+
 //    printf("\n");
 
 }
@@ -172,15 +184,18 @@ void mergeStepB(char* T, int* SA, int* Psi, int arrayLength, int partLength,
  *
  * @param T DNA sequence (plus a '$')
  * @param SA use SA to store the startIndexes of suffixes sorted by lex-order
+ * @param SA_inverse inverse of SA
  * @param Psi Psi array of T -- the results is stored in this array
  * @param arrayLength length of T
  * @param partLength length of a part (n/log2(n))
  * @param partIndex index of this part
  * @param order order[] that stores result of func order(suf_k, T'), where suf_k is the
- *      k-th intest suffix of T_i and T' is combination of T_(i+1)...T_([n/l|+]).
+ *      k-th longest suffix of T_i and T' is combination of T_(i+1)...T_([n/l|+]).
  */
-void mergeStepC(char* T, int* SA, int* Psi, int arrayLength, int partLength,
+void mergeStepC(char* T, int* SA, int* SA_inverse, int* Psi, int arrayLength, int partLength,
                 int partIndex, int* order) {
+    long startTime = 0;
+    long endTime = 0;
     printf("Merge Step (c)\n");
     int i = 0;
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
@@ -195,21 +210,47 @@ void mergeStepC(char* T, int* SA, int* Psi, int arrayLength, int partLength,
         exit(-1);
     }
 
+    startTime = clock();
     // construction of func f
     processFuncF(T, SA, order, arrayLength, partLength, partIndex, fFunc);
+    endTime = clock();
+    printf("calculating func f takes time: %ld\n", endTime - startTime);
 
+    startTime = clock();
     // construction of func g
-    processFuncG(T, SA, order, arrayLength, partLength, partIndex, gFunc);
+    processFuncG(T, SA, SA_inverse, order, arrayLength, partLength, partIndex, gFunc);
+    endTime = clock();
+    printf("calculating func g takes time: %ld\n", endTime - startTime);
 
+    startTime = clock();
     // construction of func Psi
     processFuncPsi(T, SA, Psi, arrayLength, partLength, partIndex, psiFunc, fFunc, gFunc);
+    endTime = clock();
+    printf("calculating func psi takes time: %ld\n", endTime - startTime);
+
 
     // update SA[] of T[] to get ready for next iteration
+    // reconstruct the new SA[] from new Psi[] - according to mathematical theories
     printf("Update SA[] of T[] to get ready for next iteration. \n");
-    for(i = bi_i; i < arrayLength; i++) {
-        SA[i] = i;
+    /**
+     * \note the original reconstruction method is quick sorting initialized SA[]. But
+     *      that appears very time-consuming.
+     */
+    startTime = clock();
+    int x = bi_i;
+    SA[Psi[x]] = bi_i;
+    x = Psi[bi_i];
+    for(i = bi_i; i <= arrayLength; i++) {
+//        printf("%d -> x: %d, Psi[x]: %d, SA[Psi[x]]: %d\n",
+//               i - bi_i, x - bi_i, Psi[x] - bi_i, SA[Psi[x]] - bi_i);
+        if(x == bi_i) {
+            continue;
+        }
+        SA[Psi[x]] = SA[x] + 1;
+        x = Psi[x];
     }
-    suffixArrayQuickSort(SA, T, bi_i, arrayLength - 1);
+    endTime = clock();
+    printf("update SA[] takes time: %ld\n", endTime - startTime);
 
     free(fFunc);
     free(gFunc);
@@ -228,7 +269,7 @@ void processFuncF(char* T, int* SA, int* order, int arrayLength, int partLength,
     int bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
     // construction of func f
-    printf("Calculating func f ...\n");
+    printf("Calculating func f (length: %d) ...\n", arrayLength - bi_apostrophe);
     int num = 0;
     int maxIndex = 0;
     // calculate by lex-order for the convenience of calculating #(order(suf_k, T') <= j)
@@ -252,6 +293,7 @@ void processFuncF(char* T, int* SA, int* order, int arrayLength, int partLength,
             }
         }
 
+//        printf("locate maxIndex: %d\tnum: %d\n", maxIndex, num);
 //        printf("f[%d](%c): %d\n", SA[i + bi_apostrophe] - bi_apostrophe,
 //               T[SA[i + bi_apostrophe]], i + num);
         fFunc[SA[i + bi_apostrophe] - bi_apostrophe] = i + num;
@@ -269,34 +311,22 @@ void processFuncF(char* T, int* SA, int* order, int arrayLength, int partLength,
 /**
  * A function used for processing func g.
  */
-void processFuncG(char* T, int* SA, int* order, int arrayLength, int partLength, int partIndex,
-                  int* gFunc) {
+void processFuncG(char* T, int* SA, int* SA_inverse, int* order, int arrayLength, int partLength,
+                  int partIndex, int* gFunc) {
     int i = 0;
-    int j = 0;
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
 
-    int num = 0;
-    int maxIndex = 0;
-
-    printf("Calculating func g ...\n");
+    printf("Calculating func g (length: %d) ...\n", partLength);
     // calculate by lex-order for the convenience of calculating #(suf_k <= suf_i)
     for(i = 0; i < partLength; i++) {
         int orderValue_i = order[SA[i + bi_i] - bi_i];
-        int suffix_i = SA[i + bi_i];
-        for(j = maxIndex; j < partLength; j++) {
-            int suffix_k = SA[j + bi_i];
-            /**
-             * \note this suf-comparison operation might have stuck the program's performance
-             */
-            if(compareSuffix(suffix_k, suffix_i, T) <= 0) {
-                maxIndex++;
-                num++;
-            }
-        }
+        int num = SA_inverse[SA[i + bi_i]] - bi_i + 1;
+//        printf("locate maxIndex: %d\tnum: %d\n", maxIndex, num);
 //        printf("g[%d](%c): %d\n", SA[i + bi_i] - bi_i, T[SA[i + bi_i]],
 //               orderValue_i + num);
         gFunc[SA[i + bi_i] - bi_i] = orderValue_i + num;
     }
+
 
     printf("///////\n");
     printf("i\tch\tSA\tch_SA\tg_SA[]\n");
@@ -322,56 +352,42 @@ void processFuncPsi(char* T, int* SA, int* Psi, int arrayLength, int partLength,
     int bi_i = (partIndex - 1) * partLength;   // beginIndex_i
     int bi_apostrophe = partIndex * partLength;    // beginIndex_apostrophe
 
-    /**
-     * \caution strange bug - adding printf can fix the bugs???
-     */
-
     // construction of func Psi
     printf("Calculating func psi ...\n");
     int t = 0;
     for(t = 0; t < arrayLength - bi_i; t++) {
+//        printf("t: %d, i: %d, j: %d\n", t, i, j);
         if(t == gFunc[partLength - 1]) {
-            if(t == 4745){
-                printf("i: %d\tj: %d\n", i, j);
-            }
-            int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
-            if(index1 >= arrayLength - bi_apostrophe) {
-                printf("f func index error. \n");
-                exit(-2);
-            }
+//            int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
+//            if(index1 >= arrayLength - bi_apostrophe) {
+//                printf("f func index error. \n");
+//                exit(-2);
+//            }
 
             psiFunc[t] = fFunc[SA[Psi[0 + bi_apostrophe]] - bi_apostrophe];
-
-            printf("%d\n", t);
-        } else if(t == fFunc[SA[i + bi_apostrophe] - bi_apostrophe]) {
-            if(t == 4745){
-                printf("i: %d\tj: %d\n", i, j);
-            }
-            int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
-            int index2 = SA[Psi[i + bi_apostrophe]] - bi_apostrophe;
-            if(index1 >= arrayLength - bi_apostrophe || index2 >= arrayLength - bi_apostrophe) {
-                printf("f func index error. \n");
-                exit(-2);
-            }
+//            printf("... processed\n");
+        } else if(i < arrayLength - bi_apostrophe
+                  && t == fFunc[SA[i + bi_apostrophe] - bi_apostrophe]) {
+//            int index1 = SA[Psi[0 + bi_apostrophe]] - bi_apostrophe;
+//            int index2 = SA[Psi[i + bi_apostrophe]] - bi_apostrophe;
+//            if(index1 >= arrayLength - bi_apostrophe || index2 >= arrayLength - bi_apostrophe) {
+//                printf("f func index error. \n");
+//                exit(-2);
+//            }
 
             psiFunc[t] = fFunc[SA[Psi[i + bi_apostrophe]] - bi_apostrophe];
             i++;
-
-            printf("%d\n", t);
+//            printf("... processed\n");
         } else {
-            if(t == 4745){
-                printf("i: %d\tj: %d\n", i, j);
-            }
-            int index3 = gFunc[j] - bi_i;
-            if(index3 >= arrayLength - bi_i || (j + 1) > partLength) {
-                printf("g func index error. \n");
-                exit(-2);
-            }
+//            int index3 = gFunc[j] - bi_i;
+//            if(index3 >= arrayLength - bi_i || (j + 1) > partLength) {
+//                printf("g func index error. \n");
+//                exit(-2);
+//            }
 
             psiFunc[gFunc[j]] = gFunc[j + 1];
             j++;
-
-            printf("%d\n", t);
+//            printf("... processed\n");
         }
     }
     psiFunc[0] = gFunc[0];  // this is necessary for fixing the bug

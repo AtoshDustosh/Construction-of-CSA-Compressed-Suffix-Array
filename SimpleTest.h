@@ -3,10 +3,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "HelperFunction.h"
 
 int _valueTest = 0;
 int* _arrayTest = NULL;
+
+void _CLanguageReview() ;
+void _mathematicalFuncsTest();
+void _globalVariableInHeaderFile(int arrayTest[]);
+void _timeOperationTest();
+
+/**
+ * Test time operations of C language.
+ */
+void _timeOperationTest() {
+    int i = 0, j = 0;
+    long value = 0;
+    value = clock();
+    printf("clock: %ld\n", value);
+
+    for(i = 0; i < 10000; i++) {
+        for(j = 0; j < 100000; j++) {
+            // this loop takes about 4 seconds
+        }
+    }
+    value = clock();
+    printf("clock: %ld\n", value);
+}
 
 /**
  * Review usage of C language.
