@@ -3,7 +3,6 @@
 #include <math.h>
 #include <time.h>
 #include "SimpleTest.h"
-#include "HelperFunction.h"
 #include "SABuildFunc.h"
 #include "FileOperation.h"
 #include "BasicStep.h"
@@ -13,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "NC_008253.fna";   // file path
+char* FILEPATH = "testdata_100.txt";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -36,14 +35,8 @@ int main() {
     long startTime = 0;
     long endTime = 0;
 
-    /**
-     * \note strange bug - I once put testSet() before the first func in main() which is fnaDataSize(...)
-     *  the result of func g[] in mergeStepC(...) will get wrong ....www('A')www
-     *  this bug may have been fixed, but I'm not sure.
-     */
-//    testSet();
+    testSet();
 //    return 0;
-
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %d\n", ARRAYLENGTH);
@@ -117,8 +110,8 @@ int main() {
 
 /**
  * This is simply a debug function, mainly used when developing this program.
- * Or if you just want to see the effect or progress of some function, you can disable the comment mark,
- * and execute this function.
+ * Or if you just want to see the effect or progress of some function, you can
+ * disable the comment mark, and execute this function.
  */
 void testSet() {
 
