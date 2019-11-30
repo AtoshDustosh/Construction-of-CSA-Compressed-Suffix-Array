@@ -24,7 +24,7 @@ void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
 
     // load the DNA sequence
     loadFnaData(filePath, arrayLength, T);
-//    printf("The whole DNA sequence plus a \'$\':\n");
+    printf("The whole DNA sequence plus a \'$\':\n");
 //    for(i = 0; i < arrayLength; i++) {
 //        printf("%c", T[i]);
 //    }
@@ -36,7 +36,7 @@ void baseStep(char* filePath, char* T, int* SA, int* SA_inverse, int* Psi,
 
     printf("\n\nBeginning at index %d, the last part T_(n/l) is:\n", bi);
     for(i = bi; i < arrayLength; i++) {
-        printf("%c", T[i]);
+//        printf("%c", T[i]);
         localT[i - bi] = T[i];
         localSA[i - bi] = i - bi;
     }

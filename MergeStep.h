@@ -244,7 +244,7 @@ void mergeStepC(char* T, int* SA, int* SA_inverse, int* Psi, int arrayLength, in
 //        printf("%d -> x: %d, Psi[x]: %d, SA[Psi[x]]: %d\n",
 //               i - bi_i, x - bi_i, Psi[x] - bi_i, SA[Psi[x]] - bi_i);
         if(x == bi_i) {
-            continue;
+            continue;   // this is necessary - cannot be deleted
         }
         SA[Psi[x]] = SA[x] + 1;
         x = Psi[x];
@@ -416,8 +416,8 @@ void _fgpsiFuncTest() {
     int i = 0;
     int j = 0;
 
-    char* T_apostrophe = "cagac$";
-    char* T_i = "gca";
+    char* T_apostrophe = "gac$";
+    char* T_i = "aca";
 
     int fFuncLength = strlen(T_apostrophe);
     int gFuncLength = strlen(T_i);
@@ -428,10 +428,10 @@ void _fgpsiFuncTest() {
     int num = 0;
     int maxIndex = 0;
 
-    int order[3] = {5, 3, 1}; // order(suf_k, T') by lex-order of suffix[]
-    int SA_i[3] = {2, 1, 0}; // the corresponding lex-order of suffix[] from T_i
-    int SA[6] = {5, 3, 1, 4, 0, 2};
-    int Psi[6] = {4, 3, 5, 0, 2, 1};
+    int order[3] = {1, 2, 1}; // order(suf_k, T') by lex-order of suffix[]
+    int SA_i[3] = {2, 0, 1}; // the corresponding lex-order of suffix[] from T_i
+    int SA[6] = {3, 1, 2, 0};
+    int Psi[6] = {3, 2, 0, 1};
 
     // construction of func f
     printf("Calculating func f ...\n");
@@ -498,7 +498,7 @@ void _fgpsiFuncTest() {
     for(t = 0, i = 0, j = 0; t < fFuncLength + gFuncLength; t++) {
         if(t == gFunc[gFuncLength - 1]) {
             psiFunc[t] = fFunc[SA[Psi[0]]];
-        } else if(t == fFunc[SA[i]]) {
+        } else if(SA[i] < fFuncLength && t == fFunc[SA[i]]) {
             psiFunc[t] = fFunc[SA[Psi[i]]];
             i++;
         } else {
@@ -520,16 +520,16 @@ void _fgpsiFuncTest() {
     }
 
     // update the SA[] of T[] to get ready for next iteration
-    printf("Update SA[] of T[] to get ready for next iteration. \n");
-    int SA_new[9] = {0};
-    char* T = "gcacagac$";
-    for(i = 0; i < 9; i++) {
-        SA_new[i] = i;
-    }
-    suffixArrayQuickSort(SA_new, T, 0, 9 - 1);
-    for(i = 0; i < 9; i++) {
-        printf("%d\t%c\t%d\t%c\n", i, T[i], SA_new[i], T[SA_new[i]]);
-    }
+//    printf("Update SA[] of T[] to get ready for next iteration. \n");
+//    int SA_new[9] = {0};
+//    char* T = "gcacagac$";
+//    for(i = 0; i < 9; i++) {
+//        SA_new[i] = i;
+//    }
+//    suffixArrayQuickSort(SA_new, T, 0, 9 - 1);
+//    for(i = 0; i < 9; i++) {
+//        printf("%d\t%c\t%d\t%c\n", i, T[i], SA_new[i], T[SA_new[i]]);
+//    }
 
 }
 

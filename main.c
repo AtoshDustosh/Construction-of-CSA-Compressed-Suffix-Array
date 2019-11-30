@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_100.txt";   // file path
+char* FILEPATH = "NC_008253.fna";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -37,6 +37,7 @@ int main() {
 
     testSet();
 //    return 0;
+
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
     ARRAYLENGTH = ARRAYLENGTH + 1; // get ready to add character '$' to the end of the DNA sequence
     printf("DNA (plus a \'$\') sequence length: %d\n", ARRAYLENGTH);
