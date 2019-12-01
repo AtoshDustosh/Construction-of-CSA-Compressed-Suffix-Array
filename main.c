@@ -12,7 +12,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "NC_008253.fna";   // file path
+char* FILEPATH = "testdata_100.txt";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -21,6 +21,8 @@ char* T = NULL; // DNA sequence of (A,C,G,T) plus a '$'
 int* SA = NULL; // SA of T
 int* SA_inverse = NULL; // inverse of SA
 int* Psi = NULL; // Psi of T - the compressed suffix array
+
+char* BWT = NULL; // BWT of T - Burrows-Wheeler Transform
 
 /*
  * Functions.
@@ -35,7 +37,7 @@ int main() {
     long startTime = 0;
     long endTime = 0;
 
-    testSet();
+//    testSet();
 //    return 0;
 
     ARRAYLENGTH = fnaDataSize(FILEPATH);    // get length of DNA sequence in the fnaFile
@@ -50,6 +52,8 @@ int main() {
     SA = (int*)malloc(sizeof(int) * ARRAYLENGTH);
     SA_inverse = (int*)malloc(sizeof(int) * ARRAYLENGTH);
     Psi = (int*)malloc(sizeof(int) * ARRAYLENGTH);
+
+    BWT = (char*)malloc(sizeof(char) * ARRAYLENGTH);
 
     if(T == NULL || SA == NULL || SA_inverse == NULL || Psi == NULL) {
         printf("System memory not enough. \n");
@@ -85,18 +89,34 @@ int main() {
         free(order);
     }
 
-    printf("i\tSA[i]\tT_SA[]\tPsi[i]\n");
+    printf("Converting Psi[] to BWT[]\n");
+    convertPsiToBWT(T, Psi, BWT);
+
+    printf("i\tT[]\t");
+    printf("SA[]\tT_SA[]\t");
+    printf("Psi[]\t");
+    printf("BWT[]\t");
+    printf("\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
         if(i % PARTLENGTH != 0) {
             continue;
         }
-        printf("%d\t%d\t%c\t%d\n", i, SA[i], T[SA[i]], Psi[i]);
+        printf("%d\t%c\t", i, T[i]);
+        printf("%d\t%c\t", SA[i], T[SA[i]]);
+        printf("%d\t", Psi[i]);
+        printf("%c\t", BWT[i]);
+        printf("\n");
     }
+
+
 
     free(T);
     free(SA);
     free(SA_inverse);
     free(Psi);
+
+    free(BWT);
+
     free(FILEPATH);
 
     return 0;
@@ -134,6 +154,7 @@ void testSet() {
 //    _CSABinaryBoundSearchTest();
 //    _CSABinarySearchOrderValueTest();
 //    _fgpsiFuncTest();
+//    _convertPsiToBWTTest();
 
 //    readAndPrint();
     directlyConstruction();
@@ -150,6 +171,7 @@ void testSet() {
  * Test the performance that a program can do best.
  */
 void performanceProblem() {
+    printf("\n ******* performanceProblem *********\n");
     int arrayLength = 100;
     int integerValue = 0;
 
@@ -188,6 +210,7 @@ void performanceProblem() {
  * To solve this problem, use (int*)malloc(sizeof(int)*ARRAYLENGTH).
  */
 void directlyConstruction() {
+    printf("\n ******* directlyConstruction *********\n");
     long startTime = 0;
     long endTime = 0;
     int i = 0;
@@ -231,9 +254,10 @@ void directlyConstruction() {
     printf("Direct construction takes time: %ld\n", endTime - startTime);
 
 
-    printf("i\tPsi[]\tT[SA[]]\n");
+    printf("i\tT[]\tPsi[]\tT[SA[]]\n");
     for(i = 0; i < ARRAYLENGTH; i++) {
-        printf("%d\t%d\t%c\n", i, Psi[i], T[SA[i]]);
+        printf("%d\t%c\t%d\t%c", i, T[i], Psi[i], T[SA[i]]);
+        printf("\n");
         i = i + ARRAYLENGTH / 10;
     }
     printf("\n");
@@ -249,6 +273,7 @@ void directlyConstruction() {
  * Read all data in ?.fna file and print to console. (.fna file with specific data line length)
  */
 void readAndPrint() {
+    printf("\n ******* readAndPrint *********\n");
     FILE* fp = fopen(FILEPATH, "r");
     int dataPart = 0;
     ARRAYLENGTH = 0;

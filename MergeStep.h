@@ -233,14 +233,15 @@ void mergeStepC(char* T, int* SA, int* SA_inverse, int* Psi, int arrayLength, in
     // reconstruct the new SA[] from new Psi[] - according to mathematical theories
     printf("Update SA[] of T[] to get ready for next iteration. \n");
     /**
-     * \note the original reconstruction method is quick sorting initialized SA[]. But
-     *      that appears very time-consuming.
+     * \note the original reconstruction method is to quick sort a newly-initialized SA[].
+     *  But that appears very time-consuming. Thus I choose to make use of Psi[] for
+     *  the reconstruction of SA[].
      */
     startTime = clock();
     int x = bi_i;
     SA[Psi[x]] = bi_i;
     x = Psi[bi_i];
-    for(i = bi_i; i <= arrayLength; i++) {
+    for(i = bi_i; i < arrayLength; i++) {
 //        printf("%d -> x: %d, Psi[x]: %d, SA[Psi[x]]: %d\n",
 //               i - bi_i, x - bi_i, Psi[x] - bi_i, SA[Psi[x]] - bi_i);
         if(x == bi_i) {
@@ -255,7 +256,6 @@ void mergeStepC(char* T, int* SA, int* SA_inverse, int* Psi, int arrayLength, in
     free(fFunc);
     free(gFunc);
     free(psiFunc);
-
 }
 
 /**

@@ -19,12 +19,13 @@ void _psiArrayBuildWholeTest();
 void _binarySearchBoundTest();
 void _CSABinaryBoundSearchTest();
 void _CSABinarySearchOrderValueTest();    // this test is unnecessary ... perhaps
+void _convertPsiToBWTTest();
 
 
 /*
  * Important functions.
  */
-
+void convertPsiToBWT(char* T, int* Psi, char* BWT);
 void CSABinarySearchOrderValue(int* SA, int* Psi, int lc, int rc, int prevOrderValue,
                                int* max_b);
 void CSABinaryBoundSearch(char* T, int* SA, char c, int* left, int* right);
@@ -347,12 +348,76 @@ void CSABinarySearchOrderValue(int* SA, int* Psi, int lc, int rc, int prevOrderV
     }
 }
 
+/**
+ * Convert Psi of T to get BWT.
+ *
+ * @param T DNA sequence plus a '$'
+ * @param Psi Psi func of T
+ * @param BWT Burrows-Wheeler Transform of T
+ */
+void convertPsiToBWT(char* T, int* Psi, char* BWT) {
+    int i = 0;
+    int arrayLength = strlen(T);
+
+    // convert Psi of T to get SA of T
+    int* SA = (int*)malloc(sizeof(int) * arrayLength);
+    int x = 0;
+
+    SA[Psi[x]] = 0;
+    x = Psi[0];
+    for(i = 0; i < arrayLength; i++) {
+//        printf("%d -> x: %d, Psi[x]: %d, SA[Psi[x]]: %d\n",
+//               i, x, Psi[x], SA[Psi[x]]);
+        if(x == 0) {
+            continue;   // this is necessary - cannot be deleted
+        }
+        SA[Psi[x]] = SA[x] + 1;
+        x = Psi[x];
+    }
+
+    // convert SA of T to get BWT of T
+    for(i = 0; i < arrayLength; i++) {
+        if(SA[i] == 0) {
+            BWT[i] = T[arrayLength - 1];
+            continue;
+        }
+        BWT[i] = T[SA[i] - 1];
+    }
+
+    free(SA);
+}
 
 
 
 
 //////////////////////////////////////// the following funcs will not be used ///////////////////////////////
 
+
+/**
+ * Test converting Psi func to BWT.
+ */
+void _convertPsiToBWTTest() {
+    printf("\n ******* _convertPsiToBWTTest *********\n");
+    int i = 0;
+    char* T = "acacgt$";
+    int Psi[7] = {1, 3, 4, 2, 5, 6, 0};
+    char* BWT = (char*)malloc(sizeof(char) * strlen(T));
+
+    convertPsiToBWT(T, Psi, BWT);
+
+    printf("i\tT[]\t");
+    printf("Psi[]\t");
+    printf("BWT[]\t");
+    printf("\n");
+    for(i = 0; i < strlen(T); i++){
+        printf("%d\t%c\t", i, T[i]);
+        printf("%d\t", Psi[i]);
+        printf("%c\t", BWT[i]);
+        printf("\n");
+    }
+
+    free(BWT);
+}
 
 /**
  * Test binary search order value.
@@ -399,6 +464,8 @@ void _CSABinarySearchOrderValueTest() {
 
         printf("\n");
     }
+
+    free(order);
 }
 
 /**
