@@ -7,7 +7,6 @@
 #include "FileOperation.h"
 #include "BasicStep.h"
 #include "MergeStep.h"
-#define LINELENGTH 70
 
 /*
  * Global variables.
@@ -29,7 +28,6 @@ char* BWT = NULL; // BWT of T - Burrows-Wheeler Transform
  */
 void directlyConstruction();
 void testSet();
-void readAndPrint();
 void performanceProblem();
 
 int main() {
@@ -267,44 +265,6 @@ void directlyConstruction() {
     free(SA_inverse);
     free(Psi);
     printf("direct construction ended. \n");
-}
-
-/**
- * Read all data in ?.fna file and print to console. (.fna file with specific data line length)
- */
-void readAndPrint() {
-    printf("\n ******* readAndPrint *********\n");
-    FILE* fp = fopen(FILEPATH, "r");
-    int dataPart = 0;
-    ARRAYLENGTH = 0;
-    if(fp != NULL) {
-        char ch = fgetc(fp);
-        char buffer[LINELENGTH];
-        int bufCount = 0;
-        while(ch != EOF) {
-            if(ch == '\n' && !dataPart) {
-                dataPart = 1;
-                printf(" #(... get into data part)");
-            }
-            if(dataPart && ch != '\n') {
-//                printf("store character: %c\n", ch);
-                buffer[bufCount++] = ch;
-                ARRAYLENGTH++;
-            } else {
-                printf("%c", ch);
-            }
-            if(bufCount != 0 && (bufCount % LINELENGTH) == 0) {
-                // print buffer content when buffer is full and reset the bufPointer
-                printf("%s", buffer);
-                bufCount = 0;
-            }
-            ch = fgetc(fp);
-        }
-    } else {
-        printf("failed to open file %s", FILEPATH);
-    }
-    printf("dataLength: %d\n", ARRAYLENGTH);
-    free(fp);
 }
 
 
