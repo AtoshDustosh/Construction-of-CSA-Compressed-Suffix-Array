@@ -11,7 +11,7 @@
 /*
  * Global variables.
  */
-char* FILEPATH = "testdata_100.txt";   // file path
+char* FILEPATH = "testdata/testdata_1000.fna";   // file path
 int ARRAYLENGTH = 0; // length of T ~ n
 int PARTLENGTH = 0; // part length of T ~ l
 int PARTNUM = 0; // number of parts ~ ceil(n/l)
@@ -22,6 +22,10 @@ int* SA_inverse = NULL; // inverse of SA
 int* Psi = NULL; // Psi of T - the compressed suffix array
 
 char* BWT = NULL; // BWT of T - Burrows-Wheeler Transform
+
+char* BWTFILEPATH = "outputdata/testdata_1000.bwt";
+char* BWTFILEHEADER = ">gi|110640213|ref|NC_008253.1| Escherichia coli 536, bwt array";
+int LINELENGTH = 70;
 
 /*
  * Functions.
@@ -105,7 +109,10 @@ int main() {
         printf("%c\t", BWT[i]);
         printf("\n");
     }
+    printf("Total length: %d\n", ARRAYLENGTH);
 
+    // write BWT data into an output file
+    writeBWTData(BWT, ARRAYLENGTH, BWTFILEHEADER, LINELENGTH, BWTFILEPATH);
 
 
     free(T);

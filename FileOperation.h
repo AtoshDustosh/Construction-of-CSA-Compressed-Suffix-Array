@@ -7,6 +7,7 @@
 
 int fnaDataSize(char* filePath);
 int loadFnaData(char* filePath, int dataLength, char* T);
+void writeBWTData(char* BWT, int arrayLength, char* fileHeader, int lineLength, char* filePath);
 
 
 /**
@@ -79,6 +80,49 @@ int fnaDataSize(char* filePath) {
     }
     free(fp);
     return dataLength;
+}
+
+/**
+ * Write BWT array into a file.
+ *
+ * @param BWT BWT array
+ * @param arrayLength length of BWT
+ * @param fileHeader header of the file
+ * @param lineLength length of a line
+ * @param filePath file to be written
+ */
+void writeBWTData(char* BWT, int arrayLength, char* fileHeader, int lineLength, char* filePath) {
+    int i = 0;
+    printf("\n");
+    printf("Write BWT array into file %s\n", filePath);
+
+    // create/open file
+    FILE *fp;
+    fp = fopen(filePath, "w");
+    if(fp == NULL) {
+        printf("File creation error. \n");
+        exit(-1);
+    }
+
+    // write header
+    fprintf(fp, "%s", fileHeader);
+    fprintf(fp, "%c", '\n');
+
+    // write data
+    for(i = 0; i < arrayLength; i++) {
+        if(i != 0 && i % lineLength == 0) {
+            fprintf(fp, "%c", '\n');
+//            printf("\n");
+        }
+        fprintf(fp, "%c", BWT[i]);
+//        printf("%c", BWT[i]);
+    }
+    fprintf(fp, "%c", '\n');
+
+    printf("\n");
+    printf("... data writing finished. \n");
+
+    fclose(fp);
 }
 
 #endif // FILEOPERATION_H_INCLUDED
