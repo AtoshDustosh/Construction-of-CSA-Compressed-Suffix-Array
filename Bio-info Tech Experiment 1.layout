@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="BasicStep.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2484" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="HelperFunction.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="70" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="MergeStep.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="900" zoom_1="-1" zoom_2="-3">
+		<Cursor>
+			<Cursor1 position="9047" topLine="61" />
+		</Cursor>
+		<Folding>
+			<Collapse line="25" />
+			<Collapse line="35" />
+			<Collapse line="83" />
+			<Collapse line="100" />
+		</Folding>
+	</File>
+	<File name="SABuildFunc.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="13917" topLine="351" />
+		</Cursor>
+	</File>
+	<File name="SimpleTest.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="636" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="223" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="FileOperation.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="102" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="testdata\testdata_1.fna" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="94" topLine="0" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

@@ -1,0 +1,21 @@
+﻿# depslib dependency file v1.0
+1572255163 source:e:\c_projects\bio-info tech experiment 1\main.c
+	<stdio.h>
+	<stdlib.h>
+	"headfiletest.h"
+	"QuickSort.h"
+
+1572254120 e:\c_projects\bio-info tech experiment 1\headfiletest.h
+	<stdio.h>
+	<stdlib.h>
+	"HelperFunction.h"
+
+1572254864 e:\c_projects\bio-info tech experiment 1\quicksort.h
+	<stdio.h>
+	<stdlib.h>
+	"HelperFunction.h"
+
+1572255202 e:\c_projects\bio-info tech experiment 1\helperfunction.h
+	<stdio.h>
+	<stdlib.h>
+

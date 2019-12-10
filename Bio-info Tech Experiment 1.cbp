@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Bio-info Tech Experiment 1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="testdata\;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/Bio-info Tech Experiment 1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Bio-info Tech Experiment 1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="BasicStep.h" />
+		<Unit filename="FileOperation.h" />
+		<Unit filename="HelperFunction.h" />
+		<Unit filename="MergeStep.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="SABuildFunc.h" />
+		<Unit filename="SimpleTest.h" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="testdata/NC_008253.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testExample.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_1.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_100.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_1000.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_10000.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_2.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_300.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_3000.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_500.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Unit filename="testdata/testdata_7000.fna">
+			<Option virtualFolder="testdata/" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
