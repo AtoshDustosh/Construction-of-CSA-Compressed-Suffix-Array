@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
+#include "HelperFunction.h"
 
 int fnaDataSize(char* filePath);
 int loadFnaData(char* filePath, int dataLength, char* T);
