@@ -5,7 +5,6 @@ Usage manual:
 	modify main.c to change input file path, output file path, output file header. 
 
 details: 
-	/* ##############################
 
 	char* FILEPATH = "testdata/testdata_1000.fna";   // file path
 	int ARRAYLENGTH = 0; // length of T ~ n
@@ -23,10 +22,11 @@ details:
 	char* BWTFILEHEADER = ">gi|110640213|ref|NC_008253.1| Escherichia coli 536, bwt array";
 	int LINELENGTH = 70;
 
-	############################## */
 
 FILEPATH ~ input file path
+
 BWTFILEPATH ~ output file path
+
 BWTFILEHEADER ~ output file header
 
 TODO
