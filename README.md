@@ -6,6 +6,7 @@ Usage manual:
 
 details: 
 	/* ##############################
+
 	char* FILEPATH = "testdata/testdata_1000.fna";   // file path
 	int ARRAYLENGTH = 0; // length of T ~ n
 	int PARTLENGTH = 0; // part length of T ~ l
@@ -21,11 +22,12 @@ details:
 	char* BWTFILEPATH = "outputdata/testdata_1000.bwt";
 	char* BWTFILEHEADER = ">gi|110640213|ref|NC_008253.1| Escherichia coli 536, bwt array";
 	int LINELENGTH = 70;
+
 	############################## */
 
-	FILEPATH ~ input file path
-	BWTFILEPATH ~ output file path
-	BWTFILEHEADER ~ output file header
+FILEPATH ~ input file path
+BWTFILEPATH ~ output file path
+BWTFILEHEADER ~ output file header
 
 TODO
 	maybe will add function using format like "./xxx -arg ... ... ..."
