@@ -30,4 +30,11 @@ BWTFILEPATH ~ output file path
 BWTFILEHEADER ~ output file header
 
 TODO
+
 	maybe will add function using format like "./xxx -arg ... ... ..."
+
+Afterthoughts
+
+1. the importance of this algorithm is not about the time complexity. The point is this algorithm reduces the peak memory usage from O(nlog n) to O(n), which will be O(nlog n) if directly constructed the CSA. 
+
+2. ... 
